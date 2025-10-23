@@ -1,4 +1,4 @@
-```markdown
+````markdown
 # Code Conventions — Chat App (Vite + React + Ant Design)
 
 Purpose: ensure consistent, readable, testable code that aligns with Clean Architecture and is reviewable by both humans and AI.
@@ -47,10 +47,39 @@ Purpose: ensure consistent, readable, testable code that aligns with Clean Archi
 - Components & pages: PascalCase (ChatWindow.tsx).
 - Hooks: useCamelCase (useChatMessages.ts).
 - Folders: kebab-case or lowerCamelCase (choose one and be consistent).
-- Types and interfaces: PascalCase (Message, MessageRepository). Don’t use Hungarian prefixes (no IMessage).
+- Types and interfaces: PascalCase (Message, MessageRepository). Don't use Hungarian prefixes (no IMessage).
 - Files: component file names match component name (ChatMessage.tsx).
+- Constants: SCREAMING_SNAKE_CASE for individual constants, PascalCase for constant objects.
 
-5. State & storage
+5. Constants & configuration
+
+- Group related constants in dedicated files using Object.freeze for immutability:
+
+  ```typescript
+  // src/constants/chatConstants.ts
+  export const CHAT_CONSTANTS = Object.freeze({
+    MAX_MESSAGE_LENGTH: 1000,
+    VIRTUALIZATION_THRESHOLD: 200,
+    AUTO_SCROLL_DEBOUNCE: 300,
+    MESSAGE_BATCH_SIZE: 50,
+  } as const);
+
+  // src/constants/messageTypes.ts
+  export const MESSAGE_TYPES = Object.freeze({
+    TEXT: 'text',
+    IMAGE: 'image',
+    FILE: 'file',
+    SYSTEM: 'system',
+  } as const);
+  ```
+````
+
+- Use `as const` with Object.freeze for strict type inference.
+- Constants should be grouped by domain/feature and placed in src/constants/.
+- Import constants using destructuring: `const { MAX_MESSAGE_LENGTH } = CHAT_CONSTANTS;`
+- Avoid magic numbers/strings in code; extract them to constants files.
+
+6. State & storage
 
 - Use local component state for UI-specific state; use context or a small store (e.g., Zustand) for shared state when needed.
 - Wrap localStorage access in a repository (e.g., LocalMessageRepository) to allow mocking and swapping.
@@ -131,4 +160,7 @@ Purpose: ensure consistent, readable, testable code that aligns with Clean Archi
 - Virtualization: react-window or @tanstack/react-virtual
 - Worker helpers: comlink (optional)
 - Small state: Zustand (optional)
+
+```
+
 ```

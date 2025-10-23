@@ -4,6 +4,7 @@
 This repository is a starter scaffold for a chat application implemented with Vite, React, TypeScript, and Ant Design, organized according to Clean Architecture principles. It is designed for development, review, and automated assistance by AI (Copilot / code-review bots) while remaining easy for humans to extend and maintain.
 
 ## Project summary
+
 - Purpose: provide a well-structured, testable chat app reference that demonstrates:
   - Clean separation of domain, use cases, ports (interfaces), and infrastructure.
   - A chat UI (mocked data persisted in localStorage) supporting send/display messages.
@@ -13,6 +14,7 @@ This repository is a starter scaffold for a chat application implemented with Vi
 - Audience: frontend engineers building chat-like UIs, teams experimenting with Clean Architecture, and AI-assisted code generation & review tools.
 
 ## Core features
+
 - Chat UI with a left navigation (conversation list) and main message area.
 - Send and display messages (local mock + persistence).
 - Receive messages through:
@@ -23,6 +25,7 @@ This repository is a starter scaffold for a chat application implemented with Vi
 - Scroll-to-message-by-id: reads messageId from the URL and scrolls the viewport to that message when possible.
 
 ## Architectural overview
+
 - Clean Architecture layering:
   - src/domain: pure domain entities and business rules.
   - src/usecases: application services (interactors) implementing business flows.
@@ -33,17 +36,8 @@ This repository is a starter scaffold for a chat application implemented with Vi
   - src/tests & e2e: shared test helpers and Playwright scenarios.
 - I/O and side effects are isolated in ports/infrastructure to make domain logic pure and easily testable.
 
-## Message model (canonical)
-- Message {
-  - id: string (UUID or unique string)
-  - text: string
-  - createdAt: string (ISO 8601)
-  - sender: 'me' | 'them' | 'system'
-  - metadata?: Record<string, any>
-}
-- All code must treat incoming message payloads as untrusted — validate and sanitize before rendering.
-
 ## Folder structure (top-level important paths)
+
 - src/
   - domain/
   - usecases/
@@ -65,6 +59,7 @@ This repository is a starter scaffold for a chat application implemented with Vi
 - .github/ (PR template, CI workflows)
 
 ## Getting started (local)
+
 Prerequisites: Node.js (>= 18 recommended), npm
 
 1. Install
@@ -77,6 +72,7 @@ Prerequisites: Node.js (>= 18 recommended), npm
    - npm run preview
 
 ## Linting & formatting
+
 - ESLint + TypeScript + recommended plugins.
 - Prettier configuration provided.
 - Run:
@@ -85,6 +81,7 @@ Prerequisites: Node.js (>= 18 recommended), npm
 - Husky + lint-staged run auto-fixes on commit (configured via package.json).
 
 ## Tests
+
 - Unit tests: Vitest + React Testing Library
   - npm run test:unit
   - npm run test:unit:watch
@@ -94,6 +91,7 @@ Prerequisites: Node.js (>= 18 recommended), npm
 - Tests should mock infrastructure (repositories, workers) in unit tests and use seeded localStorage for deterministic e2e flows.
 
 ## CI
+
 - GitHub Actions workflow runs on pull requests:
   - npm ci
   - npm run lint
@@ -102,6 +100,7 @@ Prerequisites: Node.js (>= 18 recommended), npm
 - CI status must pass before merging.
 
 ## Developer guidelines & conventions
+
 - See CODE_CONVENTIONS.md (root) for naming, component rules, dependency injection and architecture conventions.
 - I/O must go through src/ports and src/infrastructure to maintain testability.
 - Keep components thin; place business logic in usecases or hooks.
@@ -109,6 +108,7 @@ Prerequisites: Node.js (>= 18 recommended), npm
 - Clean up all event listeners (window.postMessage, worker.onmessage) in useEffect cleanup.
 
 ## AI & review artifacts
+
 - This repository includes files the AI should consult before making suggestions:
   - CODE_CONVENTIONS.md — coding conventions and architecture patterns.
   - AI_CODE_REVIEW_GUIDELINES.md — review checklist, severity levels and comment format.
@@ -116,21 +116,24 @@ Prerequisites: Node.js (>= 18 recommended), npm
 - Place these files at the repository root so automated tools and reviewers can discover the policies.
 
 ## Pull request expectations
+
 - Use conventional commits in PR titles (e.g., feat(chat): implement scroll-to-message).
 - Include description, acceptance criteria and checklist in PR body (.github/PULL_REQUEST_TEMPLATE.md).
 - Small, focused PRs are preferred. Provide unit tests for all new logic and stable e2e tests for flows that touch user-visible behavior.
 
 ## Contributing
+
 - Fork the repository, create a feature branch, and open a PR against main.
 - Run lint and tests locally before pushing.
 - Maintain test coverage for business-critical flows (message arrival, persistence, scroll-to-id, large dataset handling).
 
 ## Troubleshooting & notes
+
 - If virtualization or scroll-to-index behaves unexpectedly, ensure the virtualizer is initialized after data load and that scroll operations are performed once the DOM node for the target exists.
 - For deterministic e2e testing of large datasets, seed localStorage with a stable dataset before loading the page.
 - Validate and parse payloads from postMessage / worker and log malformed messages for debugging.
 
 ## License
-- Repository is provided as a starter template. Add your project's license information here.
 
+- Repository is provided as a starter template. Add your project's license information here.
 ```
