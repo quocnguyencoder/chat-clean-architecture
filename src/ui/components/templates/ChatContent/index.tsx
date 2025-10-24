@@ -7,12 +7,7 @@ import { EmptyState } from '../../organisms/EmptyState';
 import { NavigationSidebar } from '../../organisms/NavigationSidebar';
 import { MessagesArea } from '../MessagesArea';
 
-import {
-  getChatHeaderStyles,
-  getChatListSidebarStyles,
-  getMainChatAreaStyles,
-  getNavigationSidebarStyles,
-} from './styles';
+import { styles } from './styles';
 
 import { mockChats } from '@/data/mockData';
 import type { MainLayoutProps } from '@/types/chat';
@@ -35,12 +30,12 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
   return (
     <>
       {/* Left Navigation Sidebar */}
-      <Sider width={60} style={getNavigationSidebarStyles()}>
+      <Sider width={60} style={styles.navigationSidebar}>
         <NavigationSidebar />
       </Sider>
 
       {/* Chat List Sidebar */}
-      <Sider width={320} style={getChatListSidebarStyles()}>
+      <Sider width={320} style={styles.chatListSidebar}>
         <ChatList
           selectedChatId={selectedChat}
           onChatSelect={setSelectedChat}
@@ -48,11 +43,11 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
       </Sider>
 
       {/* Main Chat Area */}
-      <Layout style={getMainChatAreaStyles()}>
+      <Layout style={styles.mainChatArea}>
         {selectedChatData ? (
           <>
             {/* Chat Header */}
-            <Header style={getChatHeaderStyles()}>
+            <Header style={styles.chatHeader}>
               <ChatHeader selectedChat={selectedChatData} />
             </Header>
 

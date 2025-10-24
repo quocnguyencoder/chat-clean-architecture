@@ -3,26 +3,20 @@ import { Avatar, Space, Typography } from 'antd';
 
 import { NavigationItem } from '../../molecules/NavigationItem';
 
-import {
-  getBrandContainerStyles,
-  getNavigationBrandStyles,
-  getNavigationContainerStyles,
-  getNavigationMenuStyles,
-  getUserAvatarContainerStyles,
-} from './styles';
+import { styles } from './styles';
 
 const { Title } = Typography;
 
 export const NavigationSidebar: React.FC = () => {
   return (
-    <div style={getNavigationContainerStyles()}>
-      <div style={getBrandContainerStyles()}>
-        <Title level={4} style={getNavigationBrandStyles()}>
+    <div style={styles.container}>
+      <div style={styles.brandContainer}>
+        <Title level={4} style={styles.brand}>
           Q
         </Title>
       </div>
 
-      <Space direction='vertical' size={16} style={getNavigationMenuStyles()}>
+      <Space direction='vertical' size={16} style={styles.navigationMenu}>
         <NavigationItem
           icon={<MessageOutlined />}
           label='Chats'
@@ -46,7 +40,7 @@ export const NavigationSidebar: React.FC = () => {
         />
       </Space>
 
-      <div style={getUserAvatarContainerStyles()}>
+      <div style={styles.userAvatarContainer}>
         <Avatar size={32} src='/api/placeholder/32/32' />
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import type { ReactNode } from 'react';
 
-import { getActionButtonStyles } from './styles';
+import { styles } from './styles';
 
 interface ActionButtonProps {
   icon: ReactNode;
@@ -22,7 +22,10 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
       icon={icon}
       onClick={onClick}
       disabled={disabled}
-      style={getActionButtonStyles(variant)}
+      style={{
+        ...styles.base,
+        ...(variant === 'primary' ? styles.primary : styles.secondary),
+      }}
     />
   );
 };

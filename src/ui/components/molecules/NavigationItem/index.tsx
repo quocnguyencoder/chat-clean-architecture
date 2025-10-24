@@ -1,11 +1,7 @@
 import { Badge, Button } from 'antd';
 import type { ReactNode } from 'react';
 
-import {
-  getNavigationButtonStyles,
-  getNavigationItemStyles,
-  getNavigationLabelStyles,
-} from './styles';
+import { styles } from './styles';
 
 interface NavigationItemProps {
   icon: ReactNode;
@@ -26,12 +22,12 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
     <Button
       type='text'
       icon={icon}
-      style={getNavigationButtonStyles(isActive)}
+      style={isActive ? styles.button.active : styles.button.inactive}
     />
   );
 
   return (
-    <div style={getNavigationItemStyles()}>
+    <div style={styles.container}>
       {badge ? (
         <Badge
           count={badgeType === 'count' ? badge : undefined}
@@ -43,7 +39,9 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
       ) : (
         ButtonComponent
       )}
-      <div style={getNavigationLabelStyles(isActive)}>{label}</div>
+      <div style={isActive ? styles.label.active : styles.label.inactive}>
+        {label}
+      </div>
     </div>
   );
 };

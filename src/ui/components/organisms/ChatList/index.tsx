@@ -4,31 +4,7 @@ import { Avatar, Badge, Button, Divider, Input, Typography } from 'antd';
 import { OnlineStatusIndicator } from '../../atoms/OnlineStatusIndicator';
 import { AvatarWithStatus } from '../../molecules/AvatarWithStatus';
 
-import {
-  getAddButtonStyles,
-  getAvatarContainerStyles,
-  getChatBadgeStyles,
-  getChatContentStyles,
-  getChatInfoRowStyles,
-  getChatItemContainerStyles,
-  getChatListContainerStyles,
-  getChatListHeaderStyles,
-  getChatListScrollStyles,
-  getChatListSearchInputStyles,
-  getChatListStoriesContainerStyles,
-  getChatListStoryAvatarStyles,
-  getChatListStoryItemStyles,
-  getChatListTitleStyles,
-  getChatMessageStyles,
-  getChatNameStyles,
-  getChatTimeStyles,
-  getDividerStyles,
-  getSearchIconStyles,
-  getStoriesSectionStyles,
-  getStoryAvatarContainerStyles,
-  getStoryAvatarStyles,
-  getStoryTextStyles,
-} from './styles';
+import { styles } from './styles';
 
 import { mockChats, mockStoryUsers } from '@/data/mockData';
 import type { ChatItem } from '@/types/chat';
@@ -45,100 +21,105 @@ export const ChatList: React.FC<ChatListProps> = ({
   onChatSelect,
 }) => {
   return (
-    <div style={getChatListContainerStyles()}>
+    <div style={styles.container}>
       {/* Header */}
-      <div style={getChatListHeaderStyles()}>
-        <Title level={3} style={getChatListTitleStyles()}>
+      <div style={styles.header}>
+        <Title level={3} style={styles.title}>
           Chats
         </Title>
-        <Button
-          type='text'
-          icon={<PlusOutlined />}
-          style={getAddButtonStyles()}
-        />
+        <Button type='text' icon={<PlusOutlined />} style={styles.addButton} />
       </div>
 
       {/* Search */}
       <Input
         placeholder='Search'
-        prefix={<SearchOutlined style={getSearchIconStyles()} />}
-        style={getChatListSearchInputStyles()}
+        prefix={<SearchOutlined style={styles.searchIcon} />}
+        style={styles.searchInput}
       />
 
       {/* Status Stories */}
-      <div style={getStoriesSectionStyles()}>
-        <div style={getChatListStoriesContainerStyles()}>
-          <div style={getChatListStoryItemStyles()}>
-            <div style={getChatListStoryAvatarStyles()}>
+      <div style={styles.storiesSection}>
+        <div style={styles.storiesContainer}>
+          <div style={styles.storyItem}>
+            <div style={styles.storyAvatar}>
               <Avatar
                 size={52}
                 src='/api/placeholder/52/52'
-                style={getStoryAvatarStyles()}
+                style={styles.storyAvatarStyles}
               />
             </div>
-            <Text style={getStoryTextStyles()}>Your note</Text>
+            <Text style={styles.storyText}>Your note</Text>
           </div>
           {mockStoryUsers.map(name => (
-            <div key={name} style={getChatListStoryItemStyles()}>
-              <div style={getStoryAvatarContainerStyles()}>
+            <div key={name} style={styles.storyItem}>
+              <div style={styles.storyAvatarContainer}>
                 <Avatar
                   size={52}
                   src='/api/placeholder/52/52'
-                  style={getStoryAvatarStyles()}
+                  style={styles.storyAvatarStyles}
                 />
                 <OnlineStatusIndicator isOnline={true} size='large' />
               </div>
-              <Text style={getStoryTextStyles()}>{name}</Text>
+              <Text style={styles.storyText}>{name}</Text>
             </div>
           ))}
         </div>
       </div>
 
-      <Divider style={getDividerStyles()} />
+      <Divider style={styles.divider} />
 
       {/* Chat List */}
-      <div style={getChatListScrollStyles()}>
-        {mockChats.map((chat: ChatItem) => (
-          <div
-            key={chat.id}
-            role='button'
-            tabIndex={0}
-            onClick={() => onChatSelect(chat.id)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                onChatSelect(chat.id);
+      <div style={styles.chatListScroll}>
+        {mockChats.map((chat: ChatItem) => {
+          const isActive = selectedChatId === chat.id;
+          return (
+            <div
+              key={chat.id}
+              role='button'
+              tabIndex={0}
+              onClick={() => onChatSelect(chat.id)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  onChatSelect(chat.id);
+                }
+              }}
+              style={
+                isActive ? styles.chatItem.active : styles.chatItem.inactive
               }
-            }}
-            style={getChatItemContainerStyles(selectedChatId === chat.id)}
-          >
-            <AvatarWithStatus
-              size={48}
-              src={chat.avatar}
-              isOnline={chat.isOnline}
-              statusSize='large'
-              style={getAvatarContainerStyles()}
-            />
-            <div style={getChatContentStyles()}>
-              <div style={getChatInfoRowStyles()}>
-                <Text strong style={getChatNameStyles()}>
-                  {chat.name}
-                </Text>
-                <Text style={getChatTimeStyles()}>{chat.time}</Text>
-              </div>
-              <div style={getChatInfoRowStyles()}>
-                <Text style={getChatMessageStyles(!!chat.unreadCount)}>
-                  {chat.lastMessage}
-                </Text>
-                {chat.unreadCount && (
-                  <Badge
-                    count={chat.unreadCount}
-                    style={getChatBadgeStyles()}
-                  />
-                )}
+            >
+              <AvatarWithStatus
+                size={48}
+                src={chat.avatar}
+                isOnline={chat.isOnline}
+                statusSize='large'
+                style={styles.avatarContainer}
+              />
+              <div style={styles.chatContent}>
+                <div style={styles.chatInfoRow}>
+                  <Text strong style={styles.chatName}>
+                    {chat.name}
+                  </Text>
+                  <Text style={styles.chatTime}>{chat.time}</Text>
+                </div>
+                <div style={styles.chatInfoRow}>
+                  <Text
+                    style={{
+                      ...styles.chatMessage.base,
+                      ...(chat.unreadCount
+                        ? styles.chatMessage.unread
+                        : styles.chatMessage.read),
+                    }}
+                  >
+                    {chat.lastMessage}
+                  </Text>
+                  {chat.unreadCount && (
+                    <Badge count={chat.unreadCount} style={styles.chatBadge} />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

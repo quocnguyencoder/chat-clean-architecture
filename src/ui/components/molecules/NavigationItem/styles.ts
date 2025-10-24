@@ -3,17 +3,21 @@ import type { CSSProperties } from 'react';
 import { theme } from '@/constants/theme';
 import { navigationStyles } from '@/ui/styles/chatStyles';
 
-export const getNavigationItemStyles = () => navigationStyles.navItem;
-
-export const getNavigationButtonStyles = (isActive: boolean): CSSProperties => {
-  return isActive
-    ? navigationStyles.activeNavButton
-    : navigationStyles.inactiveNavButton;
-};
-
-export const getNavigationLabelStyles = (isActive: boolean): CSSProperties => {
-  return {
-    ...navigationStyles.navLabel,
-    color: isActive ? theme.colors.primary : theme.colors.text.secondary,
-  };
+export const styles = {
+  container: navigationStyles.navItem,
+  button: {
+    active: navigationStyles.activeNavButton,
+    inactive: navigationStyles.inactiveNavButton,
+  },
+  label: {
+    base: navigationStyles.navLabel,
+    active: {
+      ...navigationStyles.navLabel,
+      color: theme.colors.primary,
+    } as CSSProperties,
+    inactive: {
+      ...navigationStyles.navLabel,
+      color: theme.colors.text.secondary,
+    } as CSSProperties,
+  },
 };

@@ -3,12 +3,7 @@ import { Typography } from 'antd';
 import { MessageBubble } from '../../molecules/MessageBubble';
 import { MessageInput } from '../../organisms/MessageInput';
 
-import {
-  getMessagesContainerStyles,
-  getMessagesContentStyles,
-  getUnreadHeaderStyles,
-  getUnreadTextStyles,
-} from './styles';
+import { styles } from './styles';
 
 import { mockMessages } from '@/data/mockData';
 import type { Message } from '@/types/chat';
@@ -27,10 +22,10 @@ export const MessagesArea: React.FC<MessagesAreaProps> = ({
   onSendMessage,
 }) => {
   return (
-    <div style={getMessagesContainerStyles()}>
-      <div style={getMessagesContentStyles()}>
-        <div style={getUnreadHeaderStyles()}>
-          <Text style={getUnreadTextStyles()}>Unread messages</Text>
+    <div style={styles.container}>
+      <div style={styles.content}>
+        <div style={styles.unreadHeader}>
+          <Text style={styles.unreadText}>Unread messages</Text>
         </div>
 
         {mockMessages.map((message: Message) => (

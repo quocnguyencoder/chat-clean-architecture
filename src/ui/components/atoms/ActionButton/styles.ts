@@ -2,20 +2,18 @@ import type { CSSProperties } from 'react';
 
 import { theme } from '@/constants/theme';
 
-const baseButtonStyles: CSSProperties = {
-  border: 'none',
-  minWidth: 'auto',
-  padding: 4,
-};
+export const styles = {
+  base: {
+    border: 'none',
+    minWidth: 'auto',
+    padding: 4,
+  } as CSSProperties,
 
-export const getActionButtonStyles = (
-  variant: 'primary' | 'secondary'
-): CSSProperties => {
-  return {
-    ...baseButtonStyles,
-    color:
-      variant === 'primary'
-        ? theme.colors.primary
-        : theme.colors.text.secondary,
-  };
+  primary: {
+    color: theme.colors.primary,
+  } as CSSProperties,
+
+  secondary: {
+    color: theme.colors.text.secondary,
+  } as CSSProperties,
 };

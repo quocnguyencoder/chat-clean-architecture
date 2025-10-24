@@ -7,9 +7,9 @@ import {
 } from '@ant-design/icons';
 import { Input } from 'antd';
 
-import { ActionButton } from '../atoms/ActionButton';
+import { ActionButton } from '../../atoms/ActionButton';
 
-import { messagesStyles } from '@/ui/styles/chatStyles';
+import { styles } from './styles';
 
 interface MessageInputProps {
   value: string;
@@ -25,7 +25,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   placeholder = 'Aa',
 }) => {
   return (
-    <div style={messagesStyles.inputContainer}>
+    <div style={styles.container}>
       <ActionButton icon={<PlusOutlined />} variant='primary' />
       <ActionButton icon={<PictureOutlined />} />
       <ActionButton icon={<AudioOutlined />} />
@@ -35,7 +35,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         value={value}
         onChange={e => onChange(e.target.value)}
         onPressEnter={onSend}
-        style={messagesStyles.messageInput}
+        style={styles.input}
         suffix={<ActionButton icon={<SmileOutlined />} />}
       />
 

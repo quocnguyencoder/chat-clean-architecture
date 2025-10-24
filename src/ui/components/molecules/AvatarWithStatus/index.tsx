@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 
 import { OnlineStatusIndicator } from '../../atoms/OnlineStatusIndicator';
 
-import { getAvatarWithStatusStyles } from './styles';
+import { styles } from './styles';
 
 interface AvatarWithStatusProps {
   src: string;
@@ -23,7 +23,7 @@ export const AvatarWithStatus: React.FC<AvatarWithStatusProps> = ({
   alt,
 }) => {
   return (
-    <div style={getAvatarWithStatusStyles(style)}>
+    <div style={{ ...styles.container, ...style }}>
       <AntdAvatar size={size} src={src} alt={alt} />
       <OnlineStatusIndicator isOnline={isOnline} size={statusSize} />
     </div>

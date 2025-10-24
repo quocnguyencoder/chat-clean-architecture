@@ -2,10 +2,11 @@ import type { CSSProperties } from 'react';
 
 import { layoutStyles } from '@/ui/styles/chatStyles';
 
-export const getNavigationSidebarStyles = () => layoutStyles.navigationSidebar;
-export const getChatListSidebarStyles = () => layoutStyles.chatListSidebar;
-export const getMainChatAreaStyles = () => layoutStyles.mainChatArea;
-
-export const getChatHeaderStyles = (): CSSProperties => ({
-  padding: 0,
-});
+export const styles = {
+  navigationSidebar: layoutStyles.navigationSidebar,
+  chatListSidebar: layoutStyles.chatListSidebar,
+  mainChatArea: layoutStyles.mainChatArea,
+  chatHeader: {
+    padding: 0,
+  } as CSSProperties,
+};

@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 
-import { getOnlineStatusIndicatorStyles } from './styles';
+import { getStyles } from './styles';
 
 interface OnlineStatusIndicatorProps {
   size?: 'small' | 'medium' | 'large';
@@ -15,5 +15,5 @@ export const OnlineStatusIndicator: React.FC<OnlineStatusIndicatorProps> = ({
 }) => {
   if (!isOnline) return null;
 
-  return <div style={getOnlineStatusIndicatorStyles(size, style)} />;
+  return <div style={getStyles(size, style)} />;
 };

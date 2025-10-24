@@ -7,16 +7,7 @@ import { Button, Space, Typography } from 'antd';
 
 import { AvatarWithStatus } from '../../molecules/AvatarWithStatus';
 
-import {
-  getActionButtonStyle,
-  getAvatarContainerStyles,
-  getChatHeaderActionsStyles,
-  getChatHeaderStyles,
-  getChatHeaderUserDetailsStyles,
-  getChatHeaderUserInfoStyles,
-  getChatHeaderUserNameStyles,
-  getChatHeaderUserStatusStyles,
-} from './styles';
+import { styles } from './styles';
 
 import type { ChatItem } from '@/types/chat';
 
@@ -28,37 +19,37 @@ interface ChatHeaderProps {
 
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ selectedChat }) => {
   return (
-    <div style={getChatHeaderStyles()}>
-      <div style={getChatHeaderUserInfoStyles()}>
+    <div style={styles.container}>
+      <div style={styles.userInfo}>
         <AvatarWithStatus
           size={48}
           src={selectedChat.avatar}
           isOnline={selectedChat.isOnline}
           statusSize='large'
-          style={getAvatarContainerStyles()}
+          style={styles.avatarContainer}
         />
-        <div style={getChatHeaderUserDetailsStyles()}>
-          <Text strong style={getChatHeaderUserNameStyles()}>
+        <div style={styles.userDetails}>
+          <Text strong style={styles.userName}>
             {selectedChat.name}
           </Text>
-          <Text style={getChatHeaderUserStatusStyles()}>Active now</Text>
+          <Text style={styles.userStatus}>Active now</Text>
         </div>
       </div>
-      <Space style={getChatHeaderActionsStyles()}>
+      <Space style={styles.actions}>
         <Button
           type='text'
           icon={<PhoneOutlined />}
-          style={getActionButtonStyle('primary')}
+          style={styles.actionButton.primary}
         />
         <Button
           type='text'
           icon={<VideoCameraOutlined />}
-          style={getActionButtonStyle('primary')}
+          style={styles.actionButton.primary}
         />
         <Button
           type='text'
           icon={<MoreOutlined />}
-          style={getActionButtonStyle('secondary')}
+          style={styles.actionButton.secondary}
         />
       </Space>
     </div>

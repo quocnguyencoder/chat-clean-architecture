@@ -2,18 +2,17 @@ import type { CSSProperties } from 'react';
 
 import { navigationStyles } from '@/ui/styles/chatStyles';
 
-export const getNavigationContainerStyles = () => navigationStyles.container;
-export const getNavigationBrandStyles = () => navigationStyles.brand;
-
-export const getBrandContainerStyles = (): CSSProperties => ({
-  marginBottom: 20,
-});
-
-export const getNavigationMenuStyles = (): CSSProperties => ({
-  width: '100%',
-});
-
-export const getUserAvatarContainerStyles = (): CSSProperties => ({
-  marginTop: 'auto',
-  marginBottom: 16,
-});
+export const styles = {
+  container: navigationStyles.container,
+  brand: navigationStyles.brand,
+  brandContainer: {
+    marginBottom: 20,
+  } as CSSProperties,
+  navigationMenu: {
+    width: '100%',
+  } as CSSProperties,
+  userAvatarContainer: {
+    marginTop: 'auto',
+    marginBottom: 16,
+  } as CSSProperties,
+};
