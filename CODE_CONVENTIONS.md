@@ -127,8 +127,17 @@ Purpose: ensure consistent, readable, testable code that aligns with Clean Archi
 - Use ESLint with TypeScript and Prettier integration.
 - Add Husky + lint-staged to run tests/linters on pre-commit.
 - Do not commit code that fails linting or tests.
+- **MANDATORY**: All code must automatically fix ESLint and Prettier errors before completion.
+- **MANDATORY**: All code, comments, and documentation must be written in English only, regardless of prompt language.
 
-13. Commit messages
+13. Development workflow with AI assistance
+
+- **MANDATORY**: AI should only create file templates with detailed comments unless explicitly asked to implement code.
+- Create skeleton files with comprehensive TODO comments and implementation guidance.
+- Only implement actual code when user specifically requests it.
+- Focus on scaffolding, structure, and documentation over implementation.
+
+14. Commit messages
 
 - Use Conventional Commits: type(scope): subject
   - Examples:

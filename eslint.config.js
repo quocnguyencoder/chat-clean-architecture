@@ -95,7 +95,13 @@ export default [
       'jsx-a11y/no-autofocus': 'warn',
 
       // Prettier integration
-      'prettier/prettier': 'error',
+      'prettier/prettier': [
+        'error',
+        {
+          singleQuote: true,
+          jsxSingleQuote: true,
+        },
+      ],
     },
     languageOptions: {
       ecmaVersion: 2022,
