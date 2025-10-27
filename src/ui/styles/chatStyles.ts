@@ -189,7 +189,7 @@ export const messagesStyles = {
   container: {
     padding: theme.spacing.lg,
     overflowY: 'auto',
-    height: `calc(100vh - ${theme.sizes.header + 76}px)`,
+    height: `calc(100vh - ${theme.sizes.header}px)`,
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
@@ -198,7 +198,7 @@ export const messagesStyles = {
 
   messageContainer: {
     display: 'flex',
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.lg,
     alignItems: 'flex-end',
   } as CSSProperties,
 
