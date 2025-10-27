@@ -1,4 +1,5 @@
 import type { ChatItem, Message } from '@/types/chat';
+import { generateGroupAvatar, generateUserAvatar } from '@/utils/avatar';
 
 export const mockChats: ChatItem[] = [
   {
@@ -6,7 +7,7 @@ export const mockChats: ChatItem[] = [
     name: 'John Smith 🚙',
     lastMessage: 'Sarah: That sounds great...',
     time: '12:44 pm',
-    avatar: '/api/placeholder/40/40',
+    avatar: generateUserAvatar('John Smith'),
     isOnline: true,
     unreadCount: 3,
   },
@@ -15,7 +16,7 @@ export const mockChats: ChatItem[] = [
     name: 'Emma Wilson',
     lastMessage: 'Ok',
     time: '12:34 pm',
-    avatar: '/api/placeholder/40/40',
+    avatar: generateUserAvatar('Emma Wilson'),
     isOnline: true,
   },
   {
@@ -23,7 +24,7 @@ export const mockChats: ChatItem[] = [
     name: 'Michael Brown',
     lastMessage: 'Let me check and get back...',
     time: '11:53 am',
-    avatar: '/api/placeholder/40/40',
+    avatar: generateUserAvatar('Michael Brown'),
     isOnline: false,
     unreadCount: 49,
   },
@@ -32,7 +33,7 @@ export const mockChats: ChatItem[] = [
     name: 'Project Team Alpha',
     lastMessage: 'Alex: Looking good...',
     time: '11:08 am',
-    avatar: '/api/placeholder/40/40',
+    avatar: generateGroupAvatar('Project Team Alpha'),
     isOnline: false,
     isGroup: true,
   },
@@ -41,7 +42,7 @@ export const mockChats: ChatItem[] = [
     name: 'Marketing Team 2024',
     lastMessage: 'Lisa: Today we need to...',
     time: '11:05 am',
-    avatar: '/api/placeholder/40/40',
+    avatar: generateGroupAvatar('Marketing Team 2024'),
     isOnline: true,
     isGroup: true,
   },
@@ -50,7 +51,7 @@ export const mockChats: ChatItem[] = [
     name: 'Sports Club Members',
     lastMessage: "Great! Let's finalize the...",
     time: '10:59 am',
-    avatar: '/api/placeholder/40/40',
+    avatar: generateGroupAvatar('Sports Club Members'),
     isOnline: false,
     isGroup: true,
   },
@@ -59,7 +60,7 @@ export const mockChats: ChatItem[] = [
     name: 'Design Studio',
     lastMessage: 'David: The new concepts are...',
     time: '10:54 am',
-    avatar: '/api/placeholder/40/40',
+    avatar: generateGroupAvatar('Design Studio'),
     isOnline: true,
     isGroup: true,
   },

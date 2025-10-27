@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { styles } from './styles';
 
 import { theme } from '@/constants/theme';
+import { generateUserAvatar, getDefaultAvatar } from '@/utils/avatar';
 
 const { Text } = Typography;
 
@@ -20,16 +21,23 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   sender,
   senderName,
   showAvatar = true,
-  avatarSrc = '/api/placeholder/28/28',
+  avatarSrc,
 }) => {
   const isSent = sender === 'me';
+
+  // Generate avatar URL based on sender name if not provided
+  const getAvatarSrc = () => {
+    if (avatarSrc) return avatarSrc;
+    if (senderName) return generateUserAvatar(senderName);
+    return getDefaultAvatar();
+  };
 
   return (
     <div style={isSent ? styles.container.sent : styles.container.received}>
       {sender === 'other' && showAvatar && (
         <Avatar
           size={theme.sizes.avatar.small}
-          src={avatarSrc}
+          src={getAvatarSrc()}
           style={styles.avatar}
         />
       )}
