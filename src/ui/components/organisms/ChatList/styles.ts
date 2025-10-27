@@ -42,7 +42,7 @@ export const styles = {
   } as CSSProperties,
   divider: {
     borderColor: theme.colors.border,
-    margin: '16px 0',
+    margin: '0px 0px 16px 0px',
   } as CSSProperties,
   chatListScroll: {
     maxHeight: 'calc(100vh - 280px)',

@@ -1,8 +1,8 @@
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Avatar, Badge, Button, Divider, Input, Typography } from 'antd';
+import { Badge, Button, Divider, Input, Typography } from 'antd';
 
-import { OnlineStatusIndicator } from '../../atoms/OnlineStatusIndicator';
 import { AvatarWithStatus } from '../../molecules/AvatarWithStatus';
+import { Stories } from '../Stories';
 
 import { styles } from './styles';
 
@@ -38,33 +38,7 @@ export const ChatList: React.FC<ChatListProps> = ({
       />
 
       {/* Status Stories */}
-      <div style={styles.storiesSection}>
-        <div style={styles.storiesContainer}>
-          <div style={styles.storyItem}>
-            <div style={styles.storyAvatar}>
-              <Avatar
-                size={52}
-                src='/api/placeholder/52/52'
-                style={styles.storyAvatarStyles}
-              />
-            </div>
-            <Text style={styles.storyText}>Your note</Text>
-          </div>
-          {mockStoryUsers.map(name => (
-            <div key={name} style={styles.storyItem}>
-              <div style={styles.storyAvatarContainer}>
-                <Avatar
-                  size={52}
-                  src='/api/placeholder/52/52'
-                  style={styles.storyAvatarStyles}
-                />
-                <OnlineStatusIndicator isOnline={true} size='large' />
-              </div>
-              <Text style={styles.storyText}>{name}</Text>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Stories storyUsers={mockStoryUsers} />
 
       <Divider style={styles.divider} />
 
