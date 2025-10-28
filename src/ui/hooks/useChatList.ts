@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useChatContext } from './useChatContext';
+import { useMessageEvents } from './useMessageEvents';
 
 import type { Chat } from '@/domain/entities/Chat';
 
@@ -61,6 +62,15 @@ export const useChatList = (): UseChatListReturn => {
   useEffect(() => {
     void loadChats();
   }, [loadChats]);
+
+  // Listen for new messages and refresh chat list
+  useMessageEvents({
+    onNewMessage: () => {
+      // Refresh the chat list when a new message arrives
+      // This will update the last message and unread count
+      void refreshChats();
+    },
+  });
 
   return {
     chats,

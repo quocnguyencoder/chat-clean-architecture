@@ -6,3 +6,6 @@
 
 export { GetChatDetailUseCase } from './GetChatDetailUseCase';
 export { GetChatListUseCase } from './GetChatListUseCase';
+export { ReceiveMessageUseCase } from './ReceiveMessageUseCase';
+export type { IncomingMessageData } from './ReceiveMessageUseCase';
+export { SendMessageUseCase } from './SendMessageUseCase';

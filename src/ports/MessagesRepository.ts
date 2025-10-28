@@ -2,19 +2,42 @@
  * Messages Repository Port
  *
  * Interface defining the contract for messages data persistence.
- * Note: This will be extended for infinite scroll in the future.
+ * Supports pagination for efficient handling of large message lists.
  */
 
 import type { Message } from '@/domain/entities/Message';
 
+export interface PaginationOptions {
+  limit?: number;
+  offset?: number;
+  beforeMessageId?: string;
+  afterMessageId?: string;
+}
+
+export interface PaginatedMessages {
+  messages: Message[];
+  total: number;
+  hasMore: boolean;
+}
+
 export interface MessagesRepository {
   /**
    * Get all messages for a chat
-   * Note: Currently loads all messages, will be updated for infinite scroll
    * @param chatId - Chat ID
    * @returns Promise resolving to array of messages
    */
   getByChatId(chatId: string): Promise<Message[]>;
+
+  /**
+   * Get paginated messages for a chat
+   * @param chatId - Chat ID
+   * @param options - Pagination options
+   * @returns Promise resolving to paginated messages
+   */
+  getPaginatedByChatId(
+    chatId: string,
+    options?: PaginationOptions
+  ): Promise<PaginatedMessages>;
 
   /**
    * Add message to chat

@@ -4,3 +4,4 @@ export { EmptyState } from './EmptyState';
 export { MessageInput } from './MessageInput';
 export { NavigationSidebar } from './NavigationSidebar';
 export { Stories } from './Stories';
+export { VirtualizedMessageList } from './VirtualizedMessageList';

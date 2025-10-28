@@ -2,19 +2,22 @@
  * Local Storage Messages Repository
  *
  * Concrete implementation of MessagesRepository using localStorage for persistence.
- * Note: Currently loads all messages, will be updated for infinite scroll.
+ * Supports pagination for efficient handling of large message lists.
  */
 
 import { Message, type MessagePlainObject } from '@/domain/entities/Message';
 import { mockMessagesData } from '@/mocks';
-import type { MessagesRepository } from '@/ports/MessagesRepository';
+import type {
+  MessagesRepository,
+  PaginatedMessages,
+  PaginationOptions,
+} from '@/ports/MessagesRepository';
 
 const STORAGE_KEY_PREFIX = 'chat-messages-';
 
 export class LocalStorageMessagesRepository implements MessagesRepository {
   /**
    * Get all messages for a chat
-   * Note: Currently loads all messages, will be updated for infinite scroll
    */
   async getByChatId(chatId: string): Promise<Message[]> {
     try {
@@ -34,6 +37,44 @@ export class LocalStorageMessagesRepository implements MessagesRepository {
       // If parsing fails, return mock data
       return this.getMockMessages(chatId);
     }
+  }
+
+  /**
+   * Get paginated messages for a chat
+   */
+  async getPaginatedByChatId(
+    chatId: string,
+    options: PaginationOptions = {}
+  ): Promise<PaginatedMessages> {
+    const allMessages = await this.getByChatId(chatId);
+    const { limit = 50, offset = 0, beforeMessageId, afterMessageId } = options;
+
+    let messages = allMessages;
+
+    // Filter by message ID if specified
+    if (beforeMessageId) {
+      const index = messages.findIndex(m => m.id === beforeMessageId);
+      if (index !== -1) {
+        messages = messages.slice(0, index);
+      }
+    }
+
+    if (afterMessageId) {
+      const index = messages.findIndex(m => m.id === afterMessageId);
+      if (index !== -1) {
+        messages = messages.slice(index + 1);
+      }
+    }
+
+    // Apply pagination
+    const paginatedMessages = messages.slice(offset, offset + limit);
+    const hasMore = offset + limit < messages.length;
+
+    return {
+      messages: paginatedMessages,
+      total: messages.length,
+      hasMore,
+    };
   }
 
   /**

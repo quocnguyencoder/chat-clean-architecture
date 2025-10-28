@@ -6,4 +6,8 @@
 
 export type { ChatParticipantsRepository } from './ChatParticipantsRepository';
 export type { ChatRepository } from './ChatRepository';
-export type { MessagesRepository } from './MessagesRepository';
+export type {
+  MessagesRepository,
+  PaginatedMessages,
+  PaginationOptions,
+} from './MessagesRepository';

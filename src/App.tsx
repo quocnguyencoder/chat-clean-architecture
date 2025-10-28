@@ -1,3 +1,5 @@
+import { BrowserRouter } from 'react-router-dom';
+
 import { LocalStorageChatRepository } from './infrastructure/repositories';
 import { LocalStorageChatParticipantsRepository } from './infrastructure/repositories/LocalStorageChatParticipantsRepository';
 import { LocalStorageMessagesRepository } from './infrastructure/repositories/LocalStorageMessagesRepository';
@@ -13,15 +15,17 @@ function App() {
   const messagesRepository = new LocalStorageMessagesRepository();
 
   return (
-    <ChatProvider
-      chatRepository={chatRepository}
-      participantsRepository={participantsRepository}
-      messagesRepository={messagesRepository}
-    >
-      <MainLayout>
-        <ChatContent />
-      </MainLayout>
-    </ChatProvider>
+    <BrowserRouter>
+      <ChatProvider
+        chatRepository={chatRepository}
+        participantsRepository={participantsRepository}
+        messagesRepository={messagesRepository}
+      >
+        <MainLayout>
+          <ChatContent />
+        </MainLayout>
+      </ChatProvider>
+    </BrowserRouter>
   );
 }
 

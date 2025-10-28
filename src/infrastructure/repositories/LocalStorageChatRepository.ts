@@ -122,6 +122,32 @@ export class LocalStorageChatRepository implements ChatRepository {
   }
 
   /**
+   * Update last message for a chat
+   */
+  async updateLastMessage(
+    id: string,
+    lastMessage: string,
+    time: string
+  ): Promise<Chat | null> {
+    const chat = await this.getById(id);
+    if (!chat) return null;
+
+    const updatedChat = new Chat(
+      chat.id,
+      chat.name,
+      lastMessage,
+      time,
+      chat.avatar,
+      chat.isOnline,
+      chat.unreadCount,
+      chat.isGroup
+    );
+
+    await this.save(updatedChat);
+    return updatedChat;
+  }
+
+  /**
    * Save all chats to localStorage
    */
   private async saveAllChats(chats: Chat[]): Promise<void> {

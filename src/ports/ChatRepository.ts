@@ -50,4 +50,17 @@ export interface ChatRepository {
    * @returns Promise resolving to updated chat or null if not found
    */
   updateOnlineStatus(id: string, isOnline: boolean): Promise<Chat | null>;
+
+  /**
+   * Update last message for a chat
+   * @param id - Chat ID
+   * @param lastMessage - New last message text
+   * @param time - Message time
+   * @returns Promise resolving to updated chat or null if not found
+   */
+  updateLastMessage(
+    id: string,
+    lastMessage: string,
+    time: string
+  ): Promise<Chat | null>;
 }

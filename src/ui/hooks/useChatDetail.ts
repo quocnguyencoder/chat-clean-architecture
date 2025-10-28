@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useChatContext } from './useChatContext';
+import { useMessageEvents } from './useMessageEvents';
 
 import type { ChatDetail } from '@/domain/entities/ChatDetail';
 
@@ -75,6 +76,15 @@ export const useChatDetail = (): UseChatDetailReturn => {
       setError(null);
     };
   }, []);
+
+  // Listen for new messages in current chat
+  useMessageEvents({
+    chatId: currentChatId || undefined,
+    onNewMessage: () => {
+      // Refresh chat detail when a new message arrives for this chat
+      void refreshChatDetail();
+    },
+  });
 
   return {
     chatDetail,

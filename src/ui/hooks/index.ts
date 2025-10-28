@@ -1,5 +1,5 @@
 /**
- * UI Hooks Index
+ * Hooks Index
  *
  * Barrel exports for all custom hooks
  */
@@ -7,3 +7,4 @@
 export { useChatContext } from './useChatContext';
 export { useChatDetail } from './useChatDetail';
 export { useChatList } from './useChatList';
+export { useMessageEvents } from './useMessageEvents';
