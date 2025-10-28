@@ -5,4 +5,5 @@
  */
 
 export { useChatContext } from './useChatContext';
+export { useChatDetail } from './useChatDetail';
 export { useChatList } from './useChatList';

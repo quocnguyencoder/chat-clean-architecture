@@ -7,12 +7,18 @@
 
 import React, { createContext, type ReactNode } from 'react';
 
+import type { ChatParticipantsRepository } from '@/ports/ChatParticipantsRepository';
 import type { ChatRepository } from '@/ports/ChatRepository';
+import type { MessagesRepository } from '@/ports/MessagesRepository';
+import { GetChatDetailUseCase } from '@/usecases/GetChatDetailUseCase';
 import { GetChatListUseCase } from '@/usecases/GetChatListUseCase';
 
 interface ChatContextValue {
   chatRepository: ChatRepository;
+  participantsRepository: ChatParticipantsRepository;
+  messagesRepository: MessagesRepository;
   getChatListUseCase: GetChatListUseCase;
+  getChatDetailUseCase: GetChatDetailUseCase;
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null);
@@ -20,6 +26,8 @@ const ChatContext = createContext<ChatContextValue | null>(null);
 interface ChatProviderProps {
   children: ReactNode;
   chatRepository: ChatRepository;
+  participantsRepository: ChatParticipantsRepository;
+  messagesRepository: MessagesRepository;
 }
 
 /**
@@ -31,13 +39,22 @@ interface ChatProviderProps {
 export const ChatProvider: React.FC<ChatProviderProps> = ({
   children,
   chatRepository,
+  participantsRepository,
+  messagesRepository,
 }) => {
   // Create use case instances with injected dependencies
   const getChatListUseCase = new GetChatListUseCase(chatRepository);
+  const getChatDetailUseCase = new GetChatDetailUseCase(
+    participantsRepository,
+    messagesRepository
+  );
 
   const contextValue: ChatContextValue = {
     chatRepository,
+    participantsRepository,
+    messagesRepository,
     getChatListUseCase,
+    getChatDetailUseCase,
   };
 
   return (

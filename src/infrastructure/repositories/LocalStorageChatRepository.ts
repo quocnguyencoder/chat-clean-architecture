@@ -6,8 +6,8 @@
  */
 
 import { Chat, type ChatPlainObject } from '@/domain/entities/Chat';
+import { mockChatsData } from '@/mocks';
 import type { ChatRepository } from '@/ports/ChatRepository';
-import { generateGroupAvatar, generateUserAvatar } from '@/utils/avatar';
 
 const STORAGE_KEY = 'chat-app-chats';
 
@@ -133,49 +133,6 @@ export class LocalStorageChatRepository implements ChatRepository {
    * Get mock chat data for initialization
    */
   private getMockChats(): Chat[] {
-    const mockData = [
-      {
-        id: '1',
-        name: 'John Smith 🚙',
-        lastMessage: 'Sarah: That sounds great...',
-        time: '12:44 pm',
-        avatar: generateUserAvatar('John Smith'),
-        isOnline: true,
-        unreadCount: 3,
-        isGroup: false,
-      },
-      {
-        id: '2',
-        name: 'Emma Wilson',
-        lastMessage: 'Ok',
-        time: '12:34 pm',
-        avatar: generateUserAvatar('Emma Wilson'),
-        isOnline: true,
-        unreadCount: 0,
-        isGroup: false,
-      },
-      {
-        id: '3',
-        name: 'Michael Brown',
-        lastMessage: 'Let me check and get back...',
-        time: '11:53 am',
-        avatar: generateUserAvatar('Michael Brown'),
-        isOnline: false,
-        unreadCount: 49,
-        isGroup: false,
-      },
-      {
-        id: '4',
-        name: 'Project Team Alpha',
-        lastMessage: 'Alex: Looking good...',
-        time: '11:08 am',
-        avatar: generateGroupAvatar('Project Team Alpha'),
-        isOnline: false,
-        unreadCount: 0,
-        isGroup: true,
-      },
-    ];
-
-    return mockData.map(data => Chat.fromPlainObject(data));
+    return mockChatsData.map(data => Chat.fromPlainObject(data));
   }
 }

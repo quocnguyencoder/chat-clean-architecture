@@ -1,0 +1,217 @@
+/**
+ * Mock Messages Data
+ *
+ * Centralized mock data for chat messages.
+ * This data is linked with chats and participants.
+ */
+
+import type { MessagePlainObject } from '@/domain/entities/Message';
+
+export const mockMessagesData: Record<string, MessagePlainObject[]> = {
+  '1': [
+    {
+      id: 'msg-1',
+      text: 'Hey there! How are you doing?',
+      senderId: 'user-1',
+      senderName: 'John Smith',
+      time: '12:40 PM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-2',
+      text: "Hi John! I'm doing great, thanks for asking. How about you?",
+      senderId: 'user-2',
+      senderName: 'You',
+      time: '12:42 PM',
+      isFromMe: true,
+    },
+    {
+      id: 'msg-3',
+      text: "Pretty good! Just working on some projects. What's new with you?",
+      senderId: 'user-1',
+      senderName: 'John Smith',
+      time: '12:43 PM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-4',
+      text: 'Not much, just the usual. Hey, do you want to grab coffee sometime?',
+      senderId: 'user-2',
+      senderName: 'You',
+      time: '12:45 PM',
+      isFromMe: true,
+    },
+  ],
+  '2': [
+    {
+      id: 'msg-5',
+      text: 'Good morning! Did you see the latest update?',
+      senderId: 'user-3',
+      senderName: 'Emma Wilson',
+      time: '9:15 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-6',
+      text: 'Yes, I did! It looks really promising.',
+      senderId: 'user-2',
+      senderName: 'You',
+      time: '9:20 AM',
+      isFromMe: true,
+    },
+  ],
+  '3': [
+    {
+      id: 'msg-7',
+      text: 'Hey, are we still on for the meeting tomorrow?',
+      senderId: 'user-4',
+      senderName: 'Michael Brown',
+      time: '3:30 PM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-8',
+      text: "Absolutely! I'll be there at 2 PM.",
+      senderId: 'user-2',
+      senderName: 'You',
+      time: '3:35 PM',
+      isFromMe: true,
+    },
+  ],
+  '4': [
+    {
+      id: 'msg-9',
+      text: "Team, let's discuss the new project requirements.",
+      senderId: 'user-5',
+      senderName: 'Alex Johnson',
+      time: '10:00 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-10',
+      text: 'I think we should focus on the user experience first.',
+      senderId: 'user-6',
+      senderName: 'Lisa Chen',
+      time: '10:05 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-11',
+      text: 'Agreed! UX is crucial for this project.',
+      senderId: 'user-7',
+      senderName: 'David Kim',
+      time: '10:10 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-12',
+      text: "I'll prepare some mockups by tomorrow.",
+      senderId: 'user-2',
+      senderName: 'You',
+      time: '10:15 AM',
+      isFromMe: true,
+    },
+  ],
+  '5': [
+    {
+      id: 'msg-13',
+      text: 'Good morning team! How is everyone doing?',
+      senderId: 'user-8',
+      senderName: 'Sarah Johnson',
+      time: '9:00 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-14',
+      text: 'Morning! Ready for the big presentation today.',
+      senderId: 'user-9',
+      senderName: 'Mike Davis',
+      time: '9:05 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-15',
+      text: 'All set! The slides look great.',
+      senderId: 'user-10',
+      senderName: 'Anna Lee',
+      time: '9:10 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-16',
+      text: 'Perfect! Let me know if you need any last-minute changes.',
+      senderId: 'user-2',
+      senderName: 'You',
+      time: '9:15 AM',
+      isFromMe: true,
+    },
+  ],
+  '6': [
+    {
+      id: 'msg-17',
+      text: 'Hey everyone! Practice session at 6 PM today?',
+      senderId: 'user-11',
+      senderName: 'Tom Wilson',
+      time: '2:00 PM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-18',
+      text: "I'm in! See you there.",
+      senderId: 'user-12',
+      senderName: 'Chris Brown',
+      time: '2:15 PM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-19',
+      text: 'Count me in too!',
+      senderId: 'user-13',
+      senderName: 'Jessica Taylor',
+      time: '2:30 PM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-20',
+      text: 'Great! Looking forward to it.',
+      senderId: 'user-2',
+      senderName: 'You',
+      time: '2:45 PM',
+      isFromMe: true,
+    },
+  ],
+  '7': [
+    {
+      id: 'msg-21',
+      text: 'The new design concepts are ready for review.',
+      senderId: 'user-14',
+      senderName: 'Rachel Green',
+      time: '11:00 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-22',
+      text: 'They look amazing! Love the color scheme.',
+      senderId: 'user-15',
+      senderName: 'Ross Geller',
+      time: '11:15 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-23',
+      text: 'Thanks! I think this direction will work perfectly.',
+      senderId: 'user-16',
+      senderName: 'Monica Bing',
+      time: '11:30 AM',
+      isFromMe: false,
+    },
+    {
+      id: 'msg-24',
+      text: 'Agreed! These are our best designs yet.',
+      senderId: 'user-2',
+      senderName: 'You',
+      time: '11:45 AM',
+      isFromMe: true,
+    },
+  ],
+};

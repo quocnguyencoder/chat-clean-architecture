@@ -5,3 +5,9 @@
  */
 
 export { Chat, type ChatPlainObject } from './Chat';
+export { ChatDetail, type ChatDetailPlainObject } from './ChatDetail';
+export {
+  ChatParticipant,
+  type ChatParticipantPlainObject,
+} from './ChatParticipant';
+export { Message, type MessagePlainObject } from './Message';
