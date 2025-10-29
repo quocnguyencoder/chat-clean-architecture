@@ -14,6 +14,7 @@ export class Chat {
   public readonly isOnline: boolean;
   public readonly unreadCount: number;
   public readonly isGroup: boolean;
+  public readonly isSentByCurrentUser: boolean;
 
   constructor(
     id: string,
@@ -23,7 +24,8 @@ export class Chat {
     avatar: string,
     isOnline: boolean,
     unreadCount: number = 0,
-    isGroup: boolean = false
+    isGroup: boolean = false,
+    isSentByCurrentUser: boolean = false
   ) {
     this.id = id;
     this.name = name;
@@ -33,6 +35,7 @@ export class Chat {
     this.isOnline = isOnline;
     this.unreadCount = unreadCount;
     this.isGroup = isGroup;
+    this.isSentByCurrentUser = isSentByCurrentUser;
     this.validateId(id);
     this.validateName(name);
   }
@@ -64,6 +67,16 @@ export class Chat {
   }
 
   /**
+   * Get formatted last message with "You: " prefix if sent by current user
+   */
+  getFormattedLastMessage(): string {
+    if (this.isSentByCurrentUser) {
+      return `You: ${this.lastMessage}`;
+    }
+    return this.lastMessage;
+  }
+
+  /**
    * Convert to plain object for serialization
    */
   toPlainObject(): ChatPlainObject {
@@ -76,6 +89,7 @@ export class Chat {
       isOnline: this.isOnline,
       unreadCount: this.unreadCount,
       isGroup: this.isGroup,
+      isSentByCurrentUser: this.isSentByCurrentUser,
     };
   }
 
@@ -91,7 +105,8 @@ export class Chat {
       data.avatar,
       data.isOnline,
       data.unreadCount,
-      data.isGroup
+      data.isGroup,
+      data.isSentByCurrentUser ?? false
     );
   }
 }
@@ -108,4 +123,5 @@ export interface ChatPlainObject {
   isOnline: boolean;
   unreadCount: number;
   isGroup: boolean;
+  isSentByCurrentUser?: boolean;
 }

@@ -56,11 +56,13 @@ export interface ChatRepository {
    * @param id - Chat ID
    * @param lastMessage - New last message text
    * @param time - Message time
+   * @param isSentByCurrentUser - Whether the message is from the current user
    * @returns Promise resolving to updated chat or null if not found
    */
   updateLastMessage(
     id: string,
     lastMessage: string,
-    time: string
+    time: string,
+    isSentByCurrentUser?: boolean
   ): Promise<Chat | null>;
 }

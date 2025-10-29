@@ -17,7 +17,7 @@ export interface IncomingMessageData {
   senderId: string;
   senderName: string;
   time: string;
-  isFromMe?: boolean;
+  isSentByCurrentUser?: boolean;
 }
 
 export class ReceiveMessageUseCase {
@@ -49,7 +49,7 @@ export class ReceiveMessageUseCase {
       messageData.senderId,
       messageData.senderName,
       messageData.time,
-      messageData.isFromMe ?? false
+      messageData.isSentByCurrentUser ?? false
     );
 
     // Save message via repository
@@ -62,7 +62,8 @@ export class ReceiveMessageUseCase {
     await this.updateChatLastMessage(
       messageData.chatId,
       messageData.text,
-      messageData.time
+      messageData.time,
+      messageData.isSentByCurrentUser ?? false
     );
 
     return savedMessage;
@@ -98,10 +99,16 @@ export class ReceiveMessageUseCase {
   private async updateChatLastMessage(
     chatId: string,
     lastMessage: string,
-    time: string
+    time: string,
+    isSentByCurrentUser: boolean
   ): Promise<void> {
     try {
-      await this.chatRepository.updateLastMessage(chatId, lastMessage, time);
+      await this.chatRepository.updateLastMessage(
+        chatId,
+        lastMessage,
+        time,
+        isSentByCurrentUser
+      );
     } catch {
       // Silently handle error - don't fail the receive operation
     }

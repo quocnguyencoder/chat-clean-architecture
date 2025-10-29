@@ -94,7 +94,12 @@ export class SendMessageUseCase {
     time: string
   ): Promise<void> {
     try {
-      await this.chatRepository.updateLastMessage(chatId, lastMessage, time);
+      await this.chatRepository.updateLastMessage(
+        chatId,
+        lastMessage,
+        time,
+        true
+      );
     } catch {
       // Silently handle error - don't fail the send operation
     }

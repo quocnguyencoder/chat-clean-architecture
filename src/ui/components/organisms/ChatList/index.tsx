@@ -110,7 +110,7 @@ export const ChatList: React.FC<ChatListProps> = ({
                           : styles.chatMessage.read),
                       }}
                     >
-                      {chat.lastMessage}
+                      {chat.getFormattedLastMessage()}
                     </Text>
                     {chat.hasUnreadMessages() && (
                       <Badge
