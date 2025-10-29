@@ -85,7 +85,6 @@ export class LocalStorageChatRepository implements ChatRepository {
       chat.id,
       chat.name,
       chat.lastMessage,
-      chat.time,
       chat.avatar,
       chat.isOnline,
       Math.max(0, count), // Ensure non-negative
@@ -110,7 +109,6 @@ export class LocalStorageChatRepository implements ChatRepository {
       chat.id,
       chat.name,
       chat.lastMessage,
-      chat.time,
       chat.avatar,
       isOnline,
       chat.unreadCount,
@@ -136,8 +134,7 @@ export class LocalStorageChatRepository implements ChatRepository {
     const updatedChat = new Chat(
       chat.id,
       chat.name,
-      { message, senderId },
-      time,
+      { message, senderId, time },
       chat.avatar,
       chat.isOnline,
       chat.unreadCount,

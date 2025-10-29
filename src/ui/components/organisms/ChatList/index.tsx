@@ -9,6 +9,7 @@ import { styles } from './styles';
 import { mockStoryUsers } from '@/data/mockData';
 import type { Chat } from '@/domain/entities/Chat';
 import { useChatContext, useChatList } from '@/ui/hooks';
+import { formatTimestamp } from '@/utils/timeFormatter';
 
 const { Text, Title } = Typography;
 
@@ -100,7 +101,11 @@ export const ChatList: React.FC<ChatListProps> = ({
                     <Text strong style={styles.chatName}>
                       {chat.name}
                     </Text>
-                    <Text style={styles.chatTime}>{chat.time}</Text>
+                    {chat.hasMessages() && (
+                      <Text style={styles.chatTime}>
+                        {formatTimestamp(chat.lastMessage.time)}
+                      </Text>
+                    )}
                   </div>
                   <div style={styles.chatInfoRow}>
                     <Text
@@ -109,6 +114,8 @@ export const ChatList: React.FC<ChatListProps> = ({
                         ...(chat.hasUnreadMessages()
                           ? styles.chatMessage.unread
                           : styles.chatMessage.read),
+                        // Make placeholder message bold
+                        ...(!chat.hasMessages() && { fontWeight: 600 }),
                       }}
                     >
                       {chat.getFormattedLastMessage(currentUser.id)}

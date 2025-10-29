@@ -11,3 +11,4 @@ export type {
   PaginatedMessages,
   PaginationOptions,
 } from './MessagesRepository';
+export type { UserStatusRepository } from './UserStatusRepository';

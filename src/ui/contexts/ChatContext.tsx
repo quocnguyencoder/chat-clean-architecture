@@ -10,19 +10,23 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
   type ReactNode,
 } from 'react';
 
 import type { Chat } from '@/domain/entities/Chat';
 import type { ChatDetail } from '@/domain/entities/ChatDetail';
+import type { UserStatus } from '@/domain/entities/UserStatus';
 import { messageEventService } from '@/infrastructure/services';
 import { MockResponseService } from '@/infrastructure/services/MockResponseService';
 import { CURRENT_USER, type User } from '@/mocks/users';
 import type { ChatParticipantsRepository } from '@/ports/ChatParticipantsRepository';
 import type { ChatRepository } from '@/ports/ChatRepository';
 import type { MessagesRepository } from '@/ports/MessagesRepository';
+import type { UserStatusRepository } from '@/ports/UserStatusRepository';
 import { GetChatDetailUseCase } from '@/usecases/GetChatDetailUseCase';
 import { GetChatListUseCase } from '@/usecases/GetChatListUseCase';
+import { GetOnlineUsersUseCase } from '@/usecases/GetOnlineUsersUseCase';
 import { ReceiveMessageUseCase } from '@/usecases/ReceiveMessageUseCase';
 import { SendMessageUseCase } from '@/usecases/SendMessageUseCase';
 
@@ -30,12 +34,15 @@ interface ChatContextValue {
   chatRepository: ChatRepository;
   participantsRepository: ChatParticipantsRepository;
   messagesRepository: MessagesRepository;
+  userStatusRepository: UserStatusRepository;
   getChatListUseCase: GetChatListUseCase;
   getChatDetailUseCase: GetChatDetailUseCase;
   sendMessageUseCase: SendMessageUseCase;
   receiveMessageUseCase: ReceiveMessageUseCase;
+  getOnlineUsersUseCase: GetOnlineUsersUseCase;
   mockResponseService: MockResponseService | null;
   currentUser: User;
+  onlineUsers: UserStatus[];
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null);
@@ -45,6 +52,7 @@ interface ChatProviderProps {
   chatRepository: ChatRepository;
   participantsRepository: ChatParticipantsRepository;
   messagesRepository: MessagesRepository;
+  userStatusRepository: UserStatusRepository;
 }
 
 /**
@@ -58,10 +66,14 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
   chatRepository,
   participantsRepository,
   messagesRepository,
+  userStatusRepository,
 }) => {
   // Ref to store chats and chat details for the mock service
   const chatsRef = useRef<Chat[]>([]);
   const chatDetailsRef = useRef<Map<string, ChatDetail>>(new Map());
+
+  // State for online users
+  const [onlineUsers, setOnlineUsers] = useState<UserStatus[]>([]);
 
   // Create use case instances with injected dependencies using useMemo
   const getChatListUseCase = useMemo(
@@ -84,6 +96,11 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
     [messagesRepository, chatRepository]
   );
 
+  const getOnlineUsersUseCase = useMemo(
+    () => new GetOnlineUsersUseCase(userStatusRepository),
+    [userStatusRepository]
+  );
+
   // Initialize mock response service
   const mockResponseService = useMemo(
     () =>
@@ -101,22 +118,28 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
       chatRepository,
       participantsRepository,
       messagesRepository,
+      userStatusRepository,
       getChatListUseCase,
       getChatDetailUseCase,
       sendMessageUseCase,
       receiveMessageUseCase,
+      getOnlineUsersUseCase,
       mockResponseService,
       currentUser: CURRENT_USER,
+      onlineUsers,
     }),
     [
       chatRepository,
       participantsRepository,
       messagesRepository,
+      userStatusRepository,
       getChatListUseCase,
       getChatDetailUseCase,
       sendMessageUseCase,
       receiveMessageUseCase,
+      getOnlineUsersUseCase,
       mockResponseService,
+      onlineUsers,
     ]
   );
 
@@ -125,6 +148,11 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
     // Load initial chats data
     void getChatListUseCase.execute().then(chats => {
       chatsRef.current = chats;
+    });
+
+    // Load initial online users
+    void getOnlineUsersUseCase.execute().then(users => {
+      setOnlineUsers(users);
     });
 
     // Start listening for incoming messages
@@ -167,7 +195,12 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
       window.removeEventListener('chat:newMessage', handleChatUpdate);
       window.removeEventListener('chat:updated', handleChatUpdate);
     };
-  }, [receiveMessageUseCase, getChatListUseCase, mockResponseService]);
+  }, [
+    receiveMessageUseCase,
+    getChatListUseCase,
+    mockResponseService,
+    getOnlineUsersUseCase,
+  ]);
 
   return (
     <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>

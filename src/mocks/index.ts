@@ -30,10 +30,10 @@ export {
   ALL_USERS,
   CURRENT_USER,
   OTHER_USERS,
-  generateUserId,
   getOnlineUsers,
   getRandomOtherUser,
   getUserById,
   getUserByName,
   type User,
 } from './users';
+export { generateInitialUserStatuses, mockUserStatuses } from './userStatuses';

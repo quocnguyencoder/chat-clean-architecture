@@ -9,6 +9,7 @@
 import { Message } from '@/domain/entities/Message';
 import type { ChatRepository } from '@/ports/ChatRepository';
 import type { MessagesRepository } from '@/ports/MessagesRepository';
+import { generateMessageId } from '@/utils/uuid';
 
 export class SendMessageUseCase {
   private readonly messagesRepository: MessagesRepository;
@@ -43,7 +44,7 @@ export class SendMessageUseCase {
     }
 
     // Create message entity
-    const messageId = this.generateMessageId();
+    const messageId = generateMessageId();
     const timestamp = this.getCurrentTimestamp();
 
     const message = new Message(
@@ -79,24 +80,10 @@ export class SendMessageUseCase {
   }
 
   /**
-   * Generate a unique message ID
-   */
-  private generateMessageId(): string {
-    return `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  /**
-   * Get current timestamp in readable format
+   * Get current timestamp in ISO format
    */
   private getCurrentTimestamp(): string {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const displayHours = hours % 12 || 12;
-    const displayMinutes = minutes < 10 ? `0${minutes}` : minutes;
-
-    return `${displayHours}:${displayMinutes} ${ampm}`;
+    return new Date().toISOString();
   }
 
   /**

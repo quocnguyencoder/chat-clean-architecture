@@ -8,13 +8,13 @@
 export interface LastMessage {
   message: string;
   senderId: string;
+  time: string;
 }
 
 export class Chat {
   public readonly id: string;
   public readonly name: string;
   public readonly lastMessage: LastMessage;
-  public readonly time: string;
   public readonly avatar: string;
   public readonly isOnline: boolean;
   public readonly unreadCount: number;
@@ -24,7 +24,6 @@ export class Chat {
     id: string,
     name: string,
     lastMessage: LastMessage,
-    time: string,
     avatar: string,
     isOnline: boolean,
     unreadCount: number = 0,
@@ -33,7 +32,6 @@ export class Chat {
     this.id = id;
     this.name = name;
     this.lastMessage = lastMessage;
-    this.time = time;
     this.avatar = avatar;
     this.isOnline = isOnline;
     this.unreadCount = unreadCount;
@@ -72,10 +70,22 @@ export class Chat {
    * Get formatted last message with "You: " prefix if sent by current user
    */
   getFormattedLastMessage(currentUserId: string): string {
+    // Handle empty message (new chat)
+    if (!this.lastMessage.message || this.lastMessage.message.trim() === '') {
+      return 'Start a conversation...';
+    }
+
     if (this.lastMessage.senderId === currentUserId) {
       return `You: ${this.lastMessage.message}`;
     }
     return this.lastMessage.message;
+  }
+
+  /**
+   * Check if chat has any messages
+   */
+  hasMessages(): boolean {
+    return this.lastMessage.message !== '' && this.lastMessage.senderId !== '';
   }
 
   /**
@@ -86,7 +96,6 @@ export class Chat {
       id: this.id,
       name: this.name,
       lastMessage: this.lastMessage,
-      time: this.time,
       avatar: this.avatar,
       isOnline: this.isOnline,
       unreadCount: this.unreadCount,
@@ -102,7 +111,6 @@ export class Chat {
       data.id,
       data.name,
       data.lastMessage,
-      data.time,
       data.avatar,
       data.isOnline,
       data.unreadCount,
@@ -118,7 +126,6 @@ export interface ChatPlainObject {
   id: string;
   name: string;
   lastMessage: LastMessage;
-  time: string;
   avatar: string;
   isOnline: boolean;
   unreadCount: number;

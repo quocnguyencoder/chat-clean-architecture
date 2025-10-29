@@ -8,3 +8,4 @@ export { useChatContext } from './useChatContext';
 export { useChatDetail } from './useChatDetail';
 export { useChatList } from './useChatList';
 export { useMessageEvents } from './useMessageEvents';
+export { useOnlineUsers } from './useOnlineUsers';

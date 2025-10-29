@@ -32,7 +32,7 @@ const getUserByName = (name: string): User => {
  */
 export const GROUPS: Group[] = [
   {
-    id: '4',
+    id: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d', // Project Team Alpha
     name: 'Project Team Alpha',
     description: 'Main project team for Alpha initiative',
     avatar: generateGroupAvatar('Project Team Alpha'),
@@ -45,7 +45,7 @@ export const GROUPS: Group[] = [
     createdAt: '2024-01-15',
   },
   {
-    id: '5',
+    id: 'b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e', // Marketing Team 2024
     name: 'Marketing Team 2024',
     description: 'Marketing team discussions',
     avatar: generateGroupAvatar('Marketing Team 2024'),
@@ -58,7 +58,7 @@ export const GROUPS: Group[] = [
     createdAt: '2024-02-01',
   },
   {
-    id: '6',
+    id: 'c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f', // Sports Club Members
     name: 'Sports Club Members',
     description: 'Sports club activities and events',
     avatar: generateGroupAvatar('Sports Club Members'),
@@ -71,7 +71,7 @@ export const GROUPS: Group[] = [
     createdAt: '2024-03-10',
   },
   {
-    id: '7',
+    id: 'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a', // Design Studio
     name: 'Design Studio',
     description: 'Design team collaboration',
     avatar: generateGroupAvatar('Design Studio'),

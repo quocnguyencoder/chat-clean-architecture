@@ -7,3 +7,4 @@
 export { LocalStorageChatParticipantsRepository } from './LocalStorageChatParticipantsRepository';
 export { LocalStorageChatRepository } from './LocalStorageChatRepository';
 export { LocalStorageMessagesRepository } from './LocalStorageMessagesRepository';
+export { LocalStorageUserStatusRepository } from './LocalStorageUserStatusRepository';

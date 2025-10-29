@@ -11,3 +11,4 @@ export {
   type ChatParticipantPlainObject,
 } from './ChatParticipant';
 export { Message, type MessagePlainObject } from './Message';
+export { UserStatus, type UserStatusPlainObject } from './UserStatus';

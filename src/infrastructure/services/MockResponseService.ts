@@ -18,6 +18,7 @@ import {
 import type { ChatRepository } from '@/ports/ChatRepository';
 import type { ReceiveMessageUseCase } from '@/usecases/ReceiveMessageUseCase';
 import { getRandomResponseDelay } from '@/utils/mockHelpers';
+import { generateMessageId } from '@/utils/uuid';
 
 interface MessageEvent extends CustomEvent {
   detail: {
@@ -163,23 +164,22 @@ export class MockResponseService {
           chatId
         );
 
+        const messageId = generateMessageId();
+
         // Use ReceiveMessageUseCase to add the response
         await this.receiveMessageUseCase.execute({
           chatId: chatId,
-          messageId: `msg-${Date.now()}-response`,
+          messageId: messageId,
           text: responseText,
           senderId: senderId,
           senderName: senderName,
-          time: new Date().toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-          }),
+          time: new Date().toISOString(),
         });
 
         // Trigger custom event for UI updates
         this.dispatchMessageEvent(
           chatId,
-          `msg-${Date.now()}-response`,
+          messageId,
           responseText,
           senderId,
           senderName
@@ -209,10 +209,7 @@ export class MockResponseService {
           text,
           senderId,
           senderName,
-          time: new Date().toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-          }),
+          time: new Date().toISOString(),
         },
       })
     );
@@ -254,17 +251,16 @@ export class MockResponseService {
         ? this.getGroupSender()
         : this.getIndividualSender(randomChat.id, randomChat.name);
 
+      const messageId = generateMessageId();
+
       // Use ReceiveMessageUseCase to add the message
       await this.receiveMessageUseCase.execute({
         chatId: randomChat.id,
-        messageId: `msg-${Date.now()}-auto`,
+        messageId: messageId,
         text: randomMessage,
         senderId: senderId,
         senderName: senderName,
-        time: new Date().toLocaleTimeString('en-US', {
-          hour: 'numeric',
-          minute: '2-digit',
-        }),
+        time: new Date().toISOString(),
       });
 
       // Increment unread count
@@ -277,7 +273,7 @@ export class MockResponseService {
       // Trigger custom event for UI updates
       this.dispatchMessageEvent(
         randomChat.id,
-        `msg-${Date.now()}-auto`,
+        messageId,
         randomMessage,
         senderId,
         senderName

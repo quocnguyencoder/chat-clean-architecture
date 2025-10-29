@@ -21,8 +21,8 @@ export const mockChatsData: ChatPlainObject[] = [
     lastMessage: {
       message: '',
       senderId: '',
+      time: '',
     },
-    time: '',
     avatar: user.avatar || '',
     isOnline: user.isOnline || false,
     unreadCount: 0,
@@ -35,8 +35,8 @@ export const mockChatsData: ChatPlainObject[] = [
     lastMessage: {
       message: '',
       senderId: '',
+      time: '',
     },
-    time: '',
     avatar: group.avatar || '',
     isOnline: false,
     unreadCount: 0,

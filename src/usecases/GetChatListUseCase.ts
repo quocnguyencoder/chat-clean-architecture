@@ -42,7 +42,7 @@ export class GetChatListUseCase {
       // Convert time strings to comparable format
       // For now, assume time is already in sortable format
       // In real app, you'd want proper date parsing
-      return b.time.localeCompare(a.time);
+      return b.lastMessage.time.localeCompare(a.lastMessage.time);
     });
   }
 }
