@@ -27,7 +27,7 @@ interface UseChatDetailReturn {
  * @returns Object containing chat detail, loading state, error state, and load/refresh functions
  */
 export const useChatDetail = (): UseChatDetailReturn => {
-  const { getChatDetailUseCase } = useChatContext();
+  const { getChatDetailUseCase, chatRepository } = useChatContext();
 
   const [chatDetail, setChatDetail] = useState<ChatDetail | null>(null);
   const [loading, setLoading] = useState(false);
@@ -46,6 +46,12 @@ export const useChatDetail = (): UseChatDetailReturn => {
         const detail = await getChatDetailUseCase.execute(chatId);
         setChatDetail(detail);
         setCurrentChatId(chatId);
+
+        // Clear unread count when chat detail is successfully loaded
+        await chatRepository.updateUnreadCount(chatId, 0);
+
+        // Trigger event to update chat list
+        window.dispatchEvent(new CustomEvent('chat:updated'));
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Unknown error occurred';
@@ -56,7 +62,7 @@ export const useChatDetail = (): UseChatDetailReturn => {
         setLoading(false);
       }
     },
-    [getChatDetailUseCase]
+    [getChatDetailUseCase, chatRepository]
   );
 
   /**

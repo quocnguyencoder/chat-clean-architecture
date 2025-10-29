@@ -9,10 +9,14 @@ import React, {
   createContext,
   useEffect,
   useMemo,
+  useRef,
   type ReactNode,
 } from 'react';
 
+import type { Chat } from '@/domain/entities/Chat';
+import type { ChatDetail } from '@/domain/entities/ChatDetail';
 import { messageEventService } from '@/infrastructure/services';
+import { MockResponseService } from '@/infrastructure/services/MockResponseService';
 import type { ChatParticipantsRepository } from '@/ports/ChatParticipantsRepository';
 import type { ChatRepository } from '@/ports/ChatRepository';
 import type { MessagesRepository } from '@/ports/MessagesRepository';
@@ -29,6 +33,7 @@ interface ChatContextValue {
   getChatDetailUseCase: GetChatDetailUseCase;
   sendMessageUseCase: SendMessageUseCase;
   receiveMessageUseCase: ReceiveMessageUseCase;
+  mockResponseService: MockResponseService | null;
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null);
@@ -52,6 +57,10 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
   participantsRepository,
   messagesRepository,
 }) => {
+  // Ref to store chats and chat details for the mock service
+  const chatsRef = useRef<Chat[]>([]);
+  const chatDetailsRef = useRef<Map<string, ChatDetail>>(new Map());
+
   // Create use case instances with injected dependencies using useMemo
   const getChatListUseCase = useMemo(
     () => new GetChatListUseCase(chatRepository),
@@ -73,6 +82,18 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
     [messagesRepository, chatRepository]
   );
 
+  // Initialize mock response service
+  const mockResponseService = useMemo(
+    () =>
+      new MockResponseService(
+        receiveMessageUseCase,
+        chatRepository,
+        () => chatsRef.current,
+        (chatId: string) => chatDetailsRef.current.get(chatId) || null
+      ),
+    [receiveMessageUseCase, chatRepository]
+  );
+
   const contextValue: ChatContextValue = useMemo(
     () => ({
       chatRepository,
@@ -82,6 +103,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
       getChatDetailUseCase,
       sendMessageUseCase,
       receiveMessageUseCase,
+      mockResponseService,
     }),
     [
       chatRepository,
@@ -91,11 +113,17 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
       getChatDetailUseCase,
       sendMessageUseCase,
       receiveMessageUseCase,
+      mockResponseService,
     ]
   );
 
   // Initialize message event service
   useEffect(() => {
+    // Load initial chats data
+    void getChatListUseCase.execute().then(chats => {
+      chatsRef.current = chats;
+    });
+
     // Start listening for incoming messages
     messageEventService.startListening();
 
@@ -116,12 +144,27 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
       }
     });
 
+    // Start mock response service for demo
+    mockResponseService.start();
+
+    // Listen to chat list updates to keep the ref updated
+    const handleChatUpdate = () => {
+      void getChatListUseCase.execute().then(chats => {
+        chatsRef.current = chats;
+      });
+    };
+    window.addEventListener('chat:newMessage', handleChatUpdate);
+    window.addEventListener('chat:updated', handleChatUpdate);
+
     // Cleanup on unmount
     return () => {
       unsubscribe();
       messageEventService.stopListening();
+      mockResponseService.stop();
+      window.removeEventListener('chat:newMessage', handleChatUpdate);
+      window.removeEventListener('chat:updated', handleChatUpdate);
     };
-  }, [receiveMessageUseCase]);
+  }, [receiveMessageUseCase, getChatListUseCase, mockResponseService]);
 
   return (
     <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>

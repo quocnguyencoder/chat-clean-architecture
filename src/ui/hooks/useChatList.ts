@@ -63,6 +63,19 @@ export const useChatList = (): UseChatListReturn => {
     void loadChats();
   }, [loadChats]);
 
+  // Listen for chat updates (e.g., unread count changes)
+  useEffect(() => {
+    const handleChatUpdate = () => {
+      void refreshChats();
+    };
+
+    window.addEventListener('chat:updated', handleChatUpdate);
+
+    return () => {
+      window.removeEventListener('chat:updated', handleChatUpdate);
+    };
+  }, [refreshChats]);
+
   // Listen for new messages and refresh chat list
   useMessageEvents({
     onNewMessage: () => {

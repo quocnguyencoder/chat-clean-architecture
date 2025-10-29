@@ -28,8 +28,8 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
     messageIdFromUrl
   );
 
-  const { sendMessageUseCase, chatRepository } = useChatContext();
-  const { chats, refreshChats } = useChatList();
+  const { sendMessageUseCase } = useChatContext();
+  const { chats } = useChatList();
   const {
     chatDetail,
     loading: detailLoading,
@@ -104,17 +104,6 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
     setSelectedChat(chatId);
     // Update URL without message ID
     navigate(`?chatId=${chatId}`, { replace: true });
-
-    // Clear unread count when chat is selected
-    try {
-      await chatRepository.updateUnreadCount(chatId, 0);
-      // Refresh the chat list to reflect the updated unread count
-      await refreshChats();
-    } catch (error) {
-      // Silently handle error
-      // eslint-disable-next-line no-console
-      console.error('Failed to clear unread count:', error);
-    }
   };
 
   const handleScrollToComplete = () => {
