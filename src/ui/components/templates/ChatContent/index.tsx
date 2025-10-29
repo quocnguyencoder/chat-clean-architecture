@@ -10,6 +10,7 @@ import { MessagesArea } from '../MessagesArea';
 
 import { styles } from './styles';
 
+import { URL_PARAMS } from '@/constants';
 import type { MainLayoutProps } from '@/types/chat';
 import { useChatContext, useChatDetail, useChatList } from '@/ui/hooks';
 
@@ -19,16 +20,18 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const chatIdFromUrl = searchParams.get('chatId') || '1';
-  const messageIdFromUrl = searchParams.get('messageId');
+  const chatIdFromUrl = searchParams.get(URL_PARAMS.CHAT_ID);
+  const messageIdFromUrl = searchParams.get(URL_PARAMS.MESSAGE_ID);
 
-  const [selectedChat, setSelectedChat] = useState<string>(chatIdFromUrl);
+  const [selectedChat, setSelectedChat] = useState<string | null>(
+    chatIdFromUrl
+  );
   const [messageText, setMessageText] = useState('');
   const [scrollToMessageId, setScrollToMessageId] = useState<string | null>(
     messageIdFromUrl
   );
 
-  const { sendMessageUseCase } = useChatContext();
+  const { sendMessageUseCase, currentUser } = useChatContext();
   const { chats } = useChatList();
   const {
     chatDetail,
@@ -37,9 +40,18 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
     refreshChatDetail,
   } = useChatDetail();
 
+  // Set default chat if none selected and chats are available
+  useEffect(() => {
+    if (!selectedChat && chats.length > 0) {
+      const firstChat = chats[0];
+      setSelectedChat(firstChat.id);
+      navigate(`?${URL_PARAMS.CHAT_ID}=${firstChat.id}`, { replace: true });
+    }
+  }, [selectedChat, chats, navigate]);
+
   // Update selected chat when URL changes
   useEffect(() => {
-    if (chatIdFromUrl !== selectedChat) {
+    if (chatIdFromUrl && chatIdFromUrl !== selectedChat) {
       setSelectedChat(chatIdFromUrl);
     }
   }, [chatIdFromUrl, selectedChat]);
@@ -56,7 +68,9 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
     }
   }, [selectedChat, loadChatDetail]);
 
-  const selectedChatData = chats.find(chat => chat.id === selectedChat);
+  const selectedChatData = selectedChat
+    ? chats.find(chat => chat.id === selectedChat)
+    : null;
 
   const handleSendMessage = async () => {
     if (messageText.trim() && selectedChat) {
@@ -65,8 +79,8 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
         await sendMessageUseCase.execute(
           selectedChat,
           messageText,
-          'current-user', // This should be from actual user context
-          'Me' // This should be from actual user context
+          currentUser.id,
+          currentUser.name
         );
 
         // Clear the input
@@ -74,24 +88,6 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
 
         // Refresh chat detail to show the new message
         await refreshChatDetail();
-
-        // Trigger custom event for other components to update
-        window.dispatchEvent(
-          new CustomEvent('chat:newMessage', {
-            detail: {
-              chatId: selectedChat,
-              messageId: `msg-${Date.now()}`,
-              text: messageText,
-              senderId: 'current-user',
-              senderName: 'Me',
-              time: new Date().toLocaleTimeString('en-US', {
-                hour: 'numeric',
-                minute: '2-digit',
-              }),
-              isFromMe: true,
-            },
-          })
-        );
       } catch (error) {
         // Handle error - could show a toast notification
         // eslint-disable-next-line no-console
@@ -103,14 +99,14 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
   const handleChatSelect = async (chatId: string) => {
     setSelectedChat(chatId);
     // Update URL without message ID
-    navigate(`?chatId=${chatId}`, { replace: true });
+    navigate(`?${URL_PARAMS.CHAT_ID}=${chatId}`, { replace: true });
   };
 
   const handleScrollToComplete = () => {
     // Clear the scroll target and remove messageId from URL
     setScrollToMessageId(null);
-    if (messageIdFromUrl) {
-      navigate(`?chatId=${selectedChat}`, { replace: true });
+    if (messageIdFromUrl && selectedChat) {
+      navigate(`?${URL_PARAMS.CHAT_ID}=${selectedChat}`, { replace: true });
     }
   };
 
@@ -124,7 +120,7 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
       {/* Chat List Sidebar */}
       <Sider width={320} style={styles.chatListSidebar}>
         <ChatList
-          selectedChatId={selectedChat}
+          selectedChatId={selectedChat ?? ''}
           onChatSelect={handleChatSelect}
         />
       </Sider>

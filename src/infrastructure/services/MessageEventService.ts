@@ -160,9 +160,6 @@ export class MessageEventService {
       senderId: String(msg.senderId),
       senderName: String(msg.senderName),
       time: String(msg.time),
-      isSentByCurrentUser: Boolean(
-        msg.isSentByCurrentUser ?? msg.isFromCurrentUser ?? msg.isFromMe
-      ),
     };
   }
 

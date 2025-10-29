@@ -6,6 +6,7 @@
  * Runs independently of UI components.
  */
 
+import { mockConfig } from '@/config/mockConfig';
 import type { Chat } from '@/domain/entities/Chat';
 import type { ChatDetail } from '@/domain/entities/ChatDetail';
 import {
@@ -16,6 +17,7 @@ import {
 } from '@/mocks';
 import type { ChatRepository } from '@/ports/ChatRepository';
 import type { ReceiveMessageUseCase } from '@/usecases/ReceiveMessageUseCase';
+import { getRandomResponseDelay } from '@/utils/mockHelpers';
 
 interface MessageEvent extends CustomEvent {
   detail: {
@@ -25,7 +27,6 @@ interface MessageEvent extends CustomEvent {
     senderId: string;
     senderName: string;
     time: string;
-    isSentByCurrentUser?: boolean;
   };
 }
 
@@ -36,6 +37,7 @@ export class MockResponseService {
   private getChatsFn: () => Chat[];
   private getChatDetailFn: (chatId: string) => ChatDetail | null;
   private isPaused: boolean = false;
+  private boundHandleNewMessage: EventListener;
 
   constructor(
     receiveMessageUseCase: ReceiveMessageUseCase,
@@ -47,17 +49,23 @@ export class MockResponseService {
     this.chatRepository = chatRepository;
     this.getChatsFn = getChatsFn;
     this.getChatDetailFn = getChatDetailFn;
+    // Initialize with config value
+    this.isPaused = mockConfig.behavior.startPaused;
+    // Bind the handler once in constructor
+    this.boundHandleNewMessage = this.handleNewMessage.bind(
+      this
+    ) as EventListener;
   }
 
   /**
    * Start listening to message events and auto-sending messages
    */
   start(): void {
+    // Remove any existing listener first to prevent duplicates
+    window.removeEventListener('chat:newMessage', this.boundHandleNewMessage);
+
     // Listen to new messages
-    window.addEventListener(
-      'chat:newMessage',
-      this.handleNewMessage.bind(this) as EventListener
-    );
+    window.addEventListener('chat:newMessage', this.boundHandleNewMessage);
 
     // Start auto-sending messages to random chats
     this.startAutoSendMessages();
@@ -67,10 +75,7 @@ export class MockResponseService {
    * Stop the service and clean up
    */
   stop(): void {
-    window.removeEventListener(
-      'chat:newMessage',
-      this.handleNewMessage.bind(this) as EventListener
-    );
+    window.removeEventListener('chat:newMessage', this.boundHandleNewMessage);
 
     if (this.autoSendInterval !== null) {
       clearInterval(this.autoSendInterval);
@@ -83,8 +88,10 @@ export class MockResponseService {
    */
   pause(): void {
     this.isPaused = true;
-    // eslint-disable-next-line no-console
-    console.log('🔕 Mock responses paused');
+    if (mockConfig.behavior.enableLogging) {
+      // eslint-disable-next-line no-console
+      console.log('🔕 Mock responses paused');
+    }
   }
 
   /**
@@ -92,8 +99,10 @@ export class MockResponseService {
    */
   resume(): void {
     this.isPaused = false;
-    // eslint-disable-next-line no-console
-    console.log('🔔 Mock responses resumed');
+    if (mockConfig.behavior.enableLogging) {
+      // eslint-disable-next-line no-console
+      console.log('🔔 Mock responses resumed');
+    }
   }
 
   /**
@@ -120,10 +129,10 @@ export class MockResponseService {
    */
   private async handleNewMessage(event: Event): Promise<void> {
     const messageEvent = event as MessageEvent;
-    const { chatId, text, isSentByCurrentUser } = messageEvent.detail;
+    const { chatId, text, senderId } = messageEvent.detail;
 
     // Only respond to messages sent by current user
-    if (!isSentByCurrentUser) return;
+    if (senderId !== CURRENT_USER.id) return;
 
     // Don't respond if paused
     if (this.isPaused) return;
@@ -136,8 +145,8 @@ export class MockResponseService {
    * Simulate a response to a sent message
    */
   private simulateResponse(chatId: string, originalMessage: string): void {
-    // Random delay between 1-2 seconds
-    const delay = 1000 + Math.random() * 1000;
+    // Use configured delay range
+    const delay = getRandomResponseDelay();
 
     setTimeout(async () => {
       try {
@@ -165,7 +174,6 @@ export class MockResponseService {
             hour: 'numeric',
             minute: '2-digit',
           }),
-          isSentByCurrentUser: false,
         });
 
         // Trigger custom event for UI updates
@@ -205,7 +213,6 @@ export class MockResponseService {
             hour: 'numeric',
             minute: '2-digit',
           }),
-          isSentByCurrentUser: false,
         },
       })
     );
@@ -215,9 +222,14 @@ export class MockResponseService {
    * Start auto-sending messages to random chats
    */
   private startAutoSendMessages(): void {
+    // Only start if enabled in config
+    if (!mockConfig.autoSend.enabled) {
+      return;
+    }
+
     this.autoSendInterval = window.setInterval(() => {
       void this.sendMessageToRandomChat();
-    }, 10000); // Every 10 seconds
+    }, mockConfig.autoSend.interval);
   }
 
   /**
@@ -253,7 +265,6 @@ export class MockResponseService {
           hour: 'numeric',
           minute: '2-digit',
         }),
-        isSentByCurrentUser: false,
       });
 
       // Increment unread count

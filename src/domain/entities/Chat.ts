@@ -5,27 +5,30 @@
  * This is a pure domain entity with no external dependencies.
  */
 
+export interface LastMessage {
+  message: string;
+  senderId: string;
+}
+
 export class Chat {
   public readonly id: string;
   public readonly name: string;
-  public readonly lastMessage: string;
+  public readonly lastMessage: LastMessage;
   public readonly time: string;
   public readonly avatar: string;
   public readonly isOnline: boolean;
   public readonly unreadCount: number;
   public readonly isGroup: boolean;
-  public readonly isSentByCurrentUser: boolean;
 
   constructor(
     id: string,
     name: string,
-    lastMessage: string,
+    lastMessage: LastMessage,
     time: string,
     avatar: string,
     isOnline: boolean,
     unreadCount: number = 0,
-    isGroup: boolean = false,
-    isSentByCurrentUser: boolean = false
+    isGroup: boolean = false
   ) {
     this.id = id;
     this.name = name;
@@ -35,7 +38,6 @@ export class Chat {
     this.isOnline = isOnline;
     this.unreadCount = unreadCount;
     this.isGroup = isGroup;
-    this.isSentByCurrentUser = isSentByCurrentUser;
     this.validateId(id);
     this.validateName(name);
   }
@@ -69,11 +71,11 @@ export class Chat {
   /**
    * Get formatted last message with "You: " prefix if sent by current user
    */
-  getFormattedLastMessage(): string {
-    if (this.isSentByCurrentUser) {
-      return `You: ${this.lastMessage}`;
+  getFormattedLastMessage(currentUserId: string): string {
+    if (this.lastMessage.senderId === currentUserId) {
+      return `You: ${this.lastMessage.message}`;
     }
-    return this.lastMessage;
+    return this.lastMessage.message;
   }
 
   /**
@@ -89,7 +91,6 @@ export class Chat {
       isOnline: this.isOnline,
       unreadCount: this.unreadCount,
       isGroup: this.isGroup,
-      isSentByCurrentUser: this.isSentByCurrentUser,
     };
   }
 
@@ -105,8 +106,7 @@ export class Chat {
       data.avatar,
       data.isOnline,
       data.unreadCount,
-      data.isGroup,
-      data.isSentByCurrentUser ?? false
+      data.isGroup
     );
   }
 }
@@ -117,11 +117,10 @@ export class Chat {
 export interface ChatPlainObject {
   id: string;
   name: string;
-  lastMessage: string;
+  lastMessage: LastMessage;
   time: string;
   avatar: string;
   isOnline: boolean;
   unreadCount: number;
   isGroup: boolean;
-  isSentByCurrentUser?: boolean;
 }

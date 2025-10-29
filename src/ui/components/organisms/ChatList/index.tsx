@@ -8,7 +8,7 @@ import { styles } from './styles';
 
 import { mockStoryUsers } from '@/data/mockData';
 import type { Chat } from '@/domain/entities/Chat';
-import { useChatList } from '@/ui/hooks';
+import { useChatContext, useChatList } from '@/ui/hooks';
 
 const { Text, Title } = Typography;
 
@@ -22,6 +22,7 @@ export const ChatList: React.FC<ChatListProps> = ({
   onChatSelect,
 }) => {
   const { chats, loading, error, refreshChats } = useChatList();
+  const { currentUser } = useChatContext();
 
   if (error) {
     return (
@@ -110,7 +111,7 @@ export const ChatList: React.FC<ChatListProps> = ({
                           : styles.chatMessage.read),
                       }}
                     >
-                      {chat.getFormattedLastMessage()}
+                      {chat.getFormattedLastMessage(currentUser.id)}
                     </Text>
                     {chat.hasUnreadMessages() && (
                       <Badge

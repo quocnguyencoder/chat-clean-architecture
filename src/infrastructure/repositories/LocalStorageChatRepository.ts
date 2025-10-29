@@ -89,8 +89,7 @@ export class LocalStorageChatRepository implements ChatRepository {
       chat.avatar,
       chat.isOnline,
       Math.max(0, count), // Ensure non-negative
-      chat.isGroup,
-      chat.isSentByCurrentUser
+      chat.isGroup
     );
 
     await this.save(updatedChat);
@@ -115,8 +114,7 @@ export class LocalStorageChatRepository implements ChatRepository {
       chat.avatar,
       isOnline,
       chat.unreadCount,
-      chat.isGroup,
-      chat.isSentByCurrentUser
+      chat.isGroup
     );
 
     await this.save(updatedChat);
@@ -128,9 +126,9 @@ export class LocalStorageChatRepository implements ChatRepository {
    */
   async updateLastMessage(
     id: string,
-    lastMessage: string,
-    time: string,
-    isSentByCurrentUser: boolean = false
+    message: string,
+    senderId: string,
+    time: string
   ): Promise<Chat | null> {
     const chat = await this.getById(id);
     if (!chat) return null;
@@ -138,13 +136,12 @@ export class LocalStorageChatRepository implements ChatRepository {
     const updatedChat = new Chat(
       chat.id,
       chat.name,
-      lastMessage,
+      { message, senderId },
       time,
       chat.avatar,
       chat.isOnline,
       chat.unreadCount,
-      chat.isGroup,
-      isSentByCurrentUser
+      chat.isGroup
     );
 
     await this.save(updatedChat);

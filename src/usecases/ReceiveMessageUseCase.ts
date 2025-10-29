@@ -7,6 +7,7 @@
  */
 
 import { Message } from '@/domain/entities/Message';
+import { CURRENT_USER } from '@/mocks/users';
 import type { ChatRepository } from '@/ports/ChatRepository';
 import type { MessagesRepository } from '@/ports/MessagesRepository';
 
@@ -17,7 +18,6 @@ export interface IncomingMessageData {
   senderId: string;
   senderName: string;
   time: string;
-  isSentByCurrentUser?: boolean;
 }
 
 export class ReceiveMessageUseCase {
@@ -49,7 +49,7 @@ export class ReceiveMessageUseCase {
       messageData.senderId,
       messageData.senderName,
       messageData.time,
-      messageData.isSentByCurrentUser ?? false
+      messageData.senderId === CURRENT_USER.id // Determine if message is from current user
     );
 
     // Save message via repository
@@ -62,8 +62,8 @@ export class ReceiveMessageUseCase {
     await this.updateChatLastMessage(
       messageData.chatId,
       messageData.text,
-      messageData.time,
-      messageData.isSentByCurrentUser ?? false
+      messageData.senderId,
+      messageData.time
     );
 
     return savedMessage;
@@ -98,16 +98,16 @@ export class ReceiveMessageUseCase {
    */
   private async updateChatLastMessage(
     chatId: string,
-    lastMessage: string,
-    time: string,
-    isSentByCurrentUser: boolean
+    message: string,
+    senderId: string,
+    time: string
   ): Promise<void> {
     try {
       await this.chatRepository.updateLastMessage(
         chatId,
-        lastMessage,
-        time,
-        isSentByCurrentUser
+        message,
+        senderId,
+        time
       );
     } catch {
       // Silently handle error - don't fail the receive operation

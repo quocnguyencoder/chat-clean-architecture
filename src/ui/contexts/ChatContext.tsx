@@ -17,6 +17,7 @@ import type { Chat } from '@/domain/entities/Chat';
 import type { ChatDetail } from '@/domain/entities/ChatDetail';
 import { messageEventService } from '@/infrastructure/services';
 import { MockResponseService } from '@/infrastructure/services/MockResponseService';
+import { CURRENT_USER, type User } from '@/mocks/users';
 import type { ChatParticipantsRepository } from '@/ports/ChatParticipantsRepository';
 import type { ChatRepository } from '@/ports/ChatRepository';
 import type { MessagesRepository } from '@/ports/MessagesRepository';
@@ -34,6 +35,7 @@ interface ChatContextValue {
   sendMessageUseCase: SendMessageUseCase;
   receiveMessageUseCase: ReceiveMessageUseCase;
   mockResponseService: MockResponseService | null;
+  currentUser: User;
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null);
@@ -104,6 +106,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
       sendMessageUseCase,
       receiveMessageUseCase,
       mockResponseService,
+      currentUser: CURRENT_USER,
     }),
     [
       chatRepository,

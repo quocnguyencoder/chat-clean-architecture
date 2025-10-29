@@ -20,7 +20,9 @@ const { Title } = Typography;
 
 export const NavigationSidebar: React.FC = () => {
   const { mockResponseService } = useChatContext();
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(
+    mockResponseService?.isPausedState() ?? false
+  );
 
   const handleSeedData = () => {
     message.loading('Resetting data...', 0.5);

@@ -18,24 +18,28 @@ export const mockChatsData: ChatPlainObject[] = [
   ...OTHER_USERS.map(user => ({
     id: user.id,
     name: user.name,
-    lastMessage: '',
+    lastMessage: {
+      message: '',
+      senderId: '',
+    },
     time: '',
     avatar: user.avatar || '',
     isOnline: user.isOnline || false,
     unreadCount: 0,
     isGroup: false,
-    isSentByCurrentUser: false,
   })),
   // Group chats from GROUPS
   ...GROUPS.map(group => ({
     id: group.id,
     name: group.name,
-    lastMessage: '',
+    lastMessage: {
+      message: '',
+      senderId: '',
+    },
     time: '',
     avatar: group.avatar || '',
     isOnline: false,
     unreadCount: 0,
     isGroup: true,
-    isSentByCurrentUser: false,
   })),
 ];

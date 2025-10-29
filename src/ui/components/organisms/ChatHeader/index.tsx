@@ -9,12 +9,12 @@ import { AvatarWithStatus } from '../../molecules/AvatarWithStatus';
 
 import { styles } from './styles';
 
-import type { ChatItem } from '@/types/chat';
+import type { Chat } from '@/domain/entities/Chat';
 
 const { Text } = Typography;
 
 interface ChatHeaderProps {
-  selectedChat: ChatItem;
+  selectedChat: Chat;
 }
 
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ selectedChat }) => {

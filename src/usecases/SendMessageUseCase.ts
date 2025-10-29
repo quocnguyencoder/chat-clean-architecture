@@ -59,7 +59,21 @@ export class SendMessageUseCase {
     const savedMessage = await this.messagesRepository.add(chatId, message);
 
     // Update chat's last message
-    await this.updateChatLastMessage(chatId, text, timestamp);
+    await this.updateChatLastMessage(chatId, text, senderId, timestamp);
+
+    // Dispatch event for other services (like MockResponseService) to react
+    window.dispatchEvent(
+      new CustomEvent('chat:newMessage', {
+        detail: {
+          chatId,
+          messageId,
+          text,
+          senderId,
+          senderName,
+          time: timestamp,
+        },
+      })
+    );
 
     return savedMessage;
   }
@@ -90,15 +104,16 @@ export class SendMessageUseCase {
    */
   private async updateChatLastMessage(
     chatId: string,
-    lastMessage: string,
+    message: string,
+    senderId: string,
     time: string
   ): Promise<void> {
     try {
       await this.chatRepository.updateLastMessage(
         chatId,
-        lastMessage,
-        time,
-        true
+        message,
+        senderId,
+        time
       );
     } catch {
       // Silently handle error - don't fail the send operation
