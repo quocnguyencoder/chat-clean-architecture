@@ -7,6 +7,7 @@
 export { GetChatDetailUseCase } from './GetChatDetailUseCase';
 export { GetChatListUseCase } from './GetChatListUseCase';
 export { GetOnlineUsersUseCase } from './GetOnlineUsersUseCase';
+export { GetStoriesUseCase } from './GetStoriesUseCase';
 export { ReceiveMessageUseCase } from './ReceiveMessageUseCase';
 export type { IncomingMessageData } from './ReceiveMessageUseCase';
 export { SendMessageUseCase } from './SendMessageUseCase';

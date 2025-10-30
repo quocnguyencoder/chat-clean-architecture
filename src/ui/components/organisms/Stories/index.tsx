@@ -5,11 +5,13 @@ import { StoryItem } from '../../molecules/StoryItem';
 
 import { styles } from './styles';
 
+import type { Story } from '@/domain/entities/Story';
+
 interface StoriesProps {
-  storyUsers: string[];
+  stories: Story[];
 }
 
-export const Stories: React.FC<StoriesProps> = ({ storyUsers }) => {
+export const Stories: React.FC<StoriesProps> = ({ stories }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -62,7 +64,7 @@ export const Stories: React.FC<StoriesProps> = ({ storyUsers }) => {
         window.removeEventListener('resize', handleResize);
       };
     }
-  }, [storyUsers]);
+  }, [stories]);
 
   const allStories = [
     <StoryItem
@@ -70,13 +72,14 @@ export const Stories: React.FC<StoriesProps> = ({ storyUsers }) => {
       isCurrentUser={true}
       displayText='Your note'
     />,
-    ...storyUsers.map(name => (
+    ...stories.map(story => (
       <StoryItem
-        key={name}
-        userName={name}
+        key={story.userId}
+        userName={story.userName}
+        avatarSrc={story.userAvatar}
         showOnlineStatus={true}
-        isOnline={true}
-        displayText={name}
+        isOnline={story.isOnline}
+        displayText={story.userName}
       />
     )),
   ];

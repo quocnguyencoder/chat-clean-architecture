@@ -9,6 +9,7 @@ const { Text } = Typography;
 
 interface StoryItemProps {
   userName?: string;
+  avatarSrc?: string;
   isCurrentUser?: boolean;
   showOnlineStatus?: boolean;
   isOnline?: boolean;
@@ -17,6 +18,7 @@ interface StoryItemProps {
 
 export const StoryItem: React.FC<StoryItemProps> = ({
   userName,
+  avatarSrc,
   isCurrentUser = false,
   showOnlineStatus = false,
   isOnline = true,
@@ -30,6 +32,7 @@ export const StoryItem: React.FC<StoryItemProps> = ({
       <div style={styles.avatarContainer}>
         <StoryAvatar
           userName={userName}
+          avatarSrc={avatarSrc}
           isCurrentUser={isCurrentUser}
           style={styles.avatar}
         />

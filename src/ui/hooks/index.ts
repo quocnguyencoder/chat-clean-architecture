@@ -9,3 +9,4 @@ export { useChatDetail } from './useChatDetail';
 export { useChatList } from './useChatList';
 export { useMessageEvents } from './useMessageEvents';
 export { useOnlineUsers } from './useOnlineUsers';
+export { useStories } from './useStories';

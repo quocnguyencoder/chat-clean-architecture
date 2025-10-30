@@ -6,9 +6,8 @@ import { Stories } from '../Stories';
 
 import { styles } from './styles';
 
-import { mockStoryUsers } from '@/data/mockData';
 import type { Chat } from '@/domain/entities/Chat';
-import { useChatContext, useChatList } from '@/ui/hooks';
+import { useChatContext, useChatList, useStories } from '@/ui/hooks';
 import { formatTimestamp } from '@/utils/timeFormatter';
 
 const { Text, Title } = Typography;
@@ -24,6 +23,7 @@ export const ChatList: React.FC<ChatListProps> = ({
 }) => {
   const { chats, loading, error, refreshChats } = useChatList();
   const { currentUser } = useChatContext();
+  const { stories } = useStories();
 
   if (error) {
     return (
@@ -60,7 +60,7 @@ export const ChatList: React.FC<ChatListProps> = ({
       />
 
       {/* Status Stories */}
-      <Stories storyUsers={mockStoryUsers} />
+      <Stories stories={stories} />
 
       <Divider style={styles.divider} />
 
