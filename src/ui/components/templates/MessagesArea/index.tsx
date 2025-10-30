@@ -35,6 +35,25 @@ export const MessagesArea: React.FC<MessagesAreaProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const hasScrolledToBottom = useRef(false);
+
+  // Scroll to bottom only on first load
+  useEffect(() => {
+    if (
+      containerRef.current &&
+      !scrollToMessageId &&
+      !hasScrolledToBottom.current &&
+      chatDetail
+    ) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      hasScrolledToBottom.current = true;
+    }
+  }, [chatDetail, scrollToMessageId]);
+
+  // Reset scroll flag when chat changes
+  useEffect(() => {
+    hasScrolledToBottom.current = false;
+  }, [chatDetail?.chatId]);
 
   // Measure container size for virtualized list
   useEffect(() => {
@@ -114,11 +133,13 @@ export const MessagesArea: React.FC<MessagesAreaProps> = ({
       </div>
 
       {/* Message Input */}
-      <MessageInput
-        value={messageText}
-        onChange={onMessageChange}
-        onSend={onSendMessage}
-      />
+      <div style={styles.inputContainer}>
+        <MessageInput
+          value={messageText}
+          onChange={onMessageChange}
+          onSend={onSendMessage}
+        />
+      </div>
     </div>
   );
 };
