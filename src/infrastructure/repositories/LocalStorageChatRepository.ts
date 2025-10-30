@@ -126,6 +126,7 @@ export class LocalStorageChatRepository implements ChatRepository {
     id: string,
     message: string,
     senderId: string,
+    senderName: string | undefined,
     time: string
   ): Promise<Chat | null> {
     const chat = await this.getById(id);
@@ -134,7 +135,7 @@ export class LocalStorageChatRepository implements ChatRepository {
     const updatedChat = new Chat(
       chat.id,
       chat.name,
-      { message, senderId, time },
+      { message, senderId, senderName, time },
       chat.avatar,
       chat.isOnline,
       chat.unreadCount,

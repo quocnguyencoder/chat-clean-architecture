@@ -60,7 +60,13 @@ export class SendMessageUseCase {
     const savedMessage = await this.messagesRepository.add(chatId, message);
 
     // Update chat's last message
-    await this.updateChatLastMessage(chatId, text, senderId, timestamp);
+    await this.updateChatLastMessage(
+      chatId,
+      text,
+      senderId,
+      senderName,
+      timestamp
+    );
 
     // Dispatch event for other services (like MockResponseService) to react
     window.dispatchEvent(
@@ -93,6 +99,7 @@ export class SendMessageUseCase {
     chatId: string,
     message: string,
     senderId: string,
+    senderName: string,
     time: string
   ): Promise<void> {
     try {
@@ -100,6 +107,7 @@ export class SendMessageUseCase {
         chatId,
         message,
         senderId,
+        senderName,
         time
       );
     } catch {

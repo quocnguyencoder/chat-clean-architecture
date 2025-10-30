@@ -8,6 +8,7 @@
 export interface LastMessage {
   message: string;
   senderId: string;
+  senderName?: string;
   time: string;
 }
 
@@ -68,6 +69,7 @@ export class Chat {
 
   /**
    * Get formatted last message with "You: " prefix if sent by current user
+   * For group chats, shows sender name for messages from others
    */
   getFormattedLastMessage(currentUserId: string): string {
     // Handle empty message (new chat)
@@ -78,6 +80,12 @@ export class Chat {
     if (this.lastMessage.senderId === currentUserId) {
       return `You: ${this.lastMessage.message}`;
     }
+
+    // For group chats, show sender name for messages from others
+    if (this.isGroup && this.lastMessage.senderName) {
+      return `${this.lastMessage.senderName}: ${this.lastMessage.message}`;
+    }
+
     return this.lastMessage.message;
   }
 

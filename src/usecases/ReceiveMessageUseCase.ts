@@ -63,6 +63,7 @@ export class ReceiveMessageUseCase {
       messageData.chatId,
       messageData.text,
       messageData.senderId,
+      messageData.senderName,
       messageData.time
     );
 
@@ -100,6 +101,7 @@ export class ReceiveMessageUseCase {
     chatId: string,
     message: string,
     senderId: string,
+    senderName: string,
     time: string
   ): Promise<void> {
     try {
@@ -107,6 +109,7 @@ export class ReceiveMessageUseCase {
         chatId,
         message,
         senderId,
+        senderName,
         time
       );
     } catch {

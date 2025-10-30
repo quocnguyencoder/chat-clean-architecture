@@ -56,6 +56,7 @@ export interface ChatRepository {
    * @param id - Chat ID
    * @param message - New last message text
    * @param senderId - ID of the message sender
+   * @param senderName - Name of the message sender (optional, for group chats)
    * @param time - Message time
    * @returns Promise resolving to updated chat or null if not found
    */
@@ -63,6 +64,7 @@ export interface ChatRepository {
     id: string,
     message: string,
     senderId: string,
+    senderName: string | undefined,
     time: string
   ): Promise<Chat | null>;
 }
