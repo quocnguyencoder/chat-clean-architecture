@@ -19,6 +19,7 @@ interface VirtualizedMessageListProps {
   height: number;
   scrollToMessageId?: string | null;
   onScrollToComplete?: () => void;
+  isGroupChat?: boolean;
 }
 
 interface RowComponentProps {
@@ -35,6 +36,7 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
   height,
   scrollToMessageId,
   onScrollToComplete,
+  isGroupChat = true,
 }) => {
   const listRef = useRef<ListImperativeAPI | null>(null);
 
@@ -102,6 +104,7 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
           sender={message.isFromMe ? 'me' : 'other'}
           senderName={message.senderName}
           showAvatar={!message.isFromMe}
+          isGroupChat={isGroupChat}
         />
       </div>
     );

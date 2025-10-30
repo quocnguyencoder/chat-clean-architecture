@@ -79,6 +79,8 @@ export const MessagesArea: React.FC<MessagesAreaProps> = ({
   const useVirtualization =
     chatDetail.messages.length >= VIRTUALIZATION_THRESHOLD;
 
+  const isGroupChat = chatDetail.isGroupChat();
+
   return (
     <div style={styles.container}>
       <div ref={containerRef} style={styles.content}>
@@ -93,6 +95,7 @@ export const MessagesArea: React.FC<MessagesAreaProps> = ({
             height={containerSize.height - 50} // Subtract header height
             scrollToMessageId={scrollToMessageId || null}
             onScrollToComplete={onScrollToComplete}
+            isGroupChat={isGroupChat}
           />
         ) : (
           <>
@@ -103,6 +106,7 @@ export const MessagesArea: React.FC<MessagesAreaProps> = ({
                 sender={message.isFromMe ? 'me' : 'other'}
                 senderName={message.senderName}
                 showAvatar={!message.isFromMe}
+                isGroupChat={isGroupChat}
               />
             ))}
           </>

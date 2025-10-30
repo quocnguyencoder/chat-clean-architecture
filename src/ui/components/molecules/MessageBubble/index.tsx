@@ -14,6 +14,7 @@ interface MessageBubbleProps {
   senderName?: string;
   showAvatar?: boolean;
   avatarSrc?: string;
+  isGroupChat?: boolean;
 }
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -22,6 +23,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   senderName,
   showAvatar = true,
   avatarSrc,
+  isGroupChat = true,
 }) => {
   const isSent = sender === 'me';
 
@@ -42,7 +44,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         />
       )}
       <div style={isSent ? styles.bubble.sent : styles.bubble.received}>
-        {senderName && sender === 'other' && (
+        {senderName && sender === 'other' && isGroupChat && (
           <Text style={styles.senderName}>{senderName}</Text>
         )}
         <Text style={styles.messageText}>{content}</Text>
