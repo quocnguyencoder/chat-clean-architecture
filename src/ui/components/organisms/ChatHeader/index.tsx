@@ -10,7 +10,7 @@ import { AvatarWithStatus } from '../../molecules/AvatarWithStatus';
 
 import { styles } from './styles';
 
-import { theme } from '@/constants/theme';
+import { getStatusColor, getStatusText } from '@/constants/chatStatus';
 import type { Chat } from '@/domain/entities/Chat';
 import { useChatContext } from '@/ui/hooks';
 
@@ -37,20 +37,16 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ selectedChat }) => {
   }, [selectedChat, onlineUsers]);
 
   // Get status text based on online status
-  const statusText = useMemo(() => {
-    if (selectedChat.isGroup) {
-      return `Group · ${selectedChat.name}`;
-    }
-    return isUserOnline ? 'Active now' : 'Offline';
-  }, [selectedChat, isUserOnline]);
+  const statusText = useMemo(
+    () => getStatusText(selectedChat.isGroup, isUserOnline),
+    [selectedChat.isGroup, isUserOnline]
+  );
 
   // Get status color based on online status
-  const statusColor = useMemo(() => {
-    if (selectedChat.isGroup) {
-      return theme.colors.text.secondary;
-    }
-    return isUserOnline ? theme.colors.success : theme.colors.text.secondary;
-  }, [selectedChat.isGroup, isUserOnline]);
+  const statusColor = useMemo(
+    () => getStatusColor(selectedChat.isGroup, isUserOnline),
+    [selectedChat.isGroup, isUserOnline]
+  );
 
   return (
     <div style={styles.container}>

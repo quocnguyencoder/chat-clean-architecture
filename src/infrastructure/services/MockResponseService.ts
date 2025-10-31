@@ -246,10 +246,11 @@ export class MockResponseService {
       // Generate random message
       const randomMessage = getRandomAutoMessage();
 
-      // Determine sender
-      const { senderId, senderName } = randomChat.isGroup
-        ? this.getGroupSender()
-        : this.getIndividualSender(randomChat.id, randomChat.name);
+      // Determine sender using the same logic as responses
+      const { senderId, senderName } = this.determineSender(
+        randomChat,
+        randomChat.id
+      );
 
       const messageId = generateMessageId();
 
@@ -291,33 +292,33 @@ export class MockResponseService {
     chat: Chat,
     chatId: string
   ): { senderId: string; senderName: string } {
+    // For group chat, get a random participant
+    if (chat.isGroup) {
+      const chatDetail = this.getChatDetailFn(chatId);
+      if (chatDetail?.participants) {
+        // Filter out current user from participants
+        const otherParticipants = chatDetail.participants.filter(
+          participant => participant.id !== CURRENT_USER.id
+        );
+
+        // If we have other participants, pick one randomly
+        if (otherParticipants.length > 0) {
+          const randomParticipant =
+            otherParticipants[
+              Math.floor(Math.random() * otherParticipants.length)
+            ];
+          return {
+            senderId: randomParticipant.id,
+            senderName: randomParticipant.name,
+          };
+        }
+      }
+
+      // Fallback to random user from mock data if no participants found
+      return this.getGroupSender();
+    }
+
     // For 1-on-1 chat, use the chat contact
-    if (!chat.isGroup) {
-      return this.getIndividualSender(chatId, chat.name);
-    }
-
-    // For group chat, try to get a random participant
-    const chatDetail = this.getChatDetailFn(chatId);
-    if (!chatDetail?.participants) {
-      return this.getIndividualSender(chatId, chat.name);
-    }
-
-    // Filter out current user from participants
-    const otherParticipants = chatDetail.participants.filter(
-      participant => participant.id !== CURRENT_USER.id
-    );
-
-    // If we have other participants, pick one randomly
-    if (otherParticipants.length > 0) {
-      const randomParticipant =
-        otherParticipants[Math.floor(Math.random() * otherParticipants.length)];
-      return {
-        senderId: randomParticipant.id,
-        senderName: randomParticipant.name,
-      };
-    }
-
-    // Fallback to chat name
     return this.getIndividualSender(chatId, chat.name);
   }
 

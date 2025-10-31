@@ -17,6 +17,21 @@ export const styles = {
     overflowX: 'hidden',
     padding: `${theme.spacing.lg}px`,
   } as CSSProperties,
+  virtualizedContainer: {
+    flex: 1,
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+  } as CSSProperties,
+  virtualizedHeader: {
+    textAlign: 'center',
+    marginBottom: 16,
+    padding: `${theme.spacing.lg}px ${theme.spacing.lg}px 0`,
+  } as CSSProperties,
+  virtualizedListWrapper: {
+    flex: 1,
+    overflow: 'hidden',
+  } as CSSProperties,
   unreadHeader: {
     textAlign: 'center',
     marginBottom: 16,

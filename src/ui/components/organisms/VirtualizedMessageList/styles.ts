@@ -6,8 +6,9 @@ import type { CSSProperties } from 'react';
 
 interface VirtualizedMessageListStyles {
   container: CSSProperties;
-  unreadHeader: CSSProperties;
-  unreadText: CSSProperties;
+  fullSize: CSSProperties;
+  messageRow: CSSProperties;
+  messageRowHighlighted: CSSProperties;
 }
 
 export const styles: VirtualizedMessageListStyles = {
@@ -17,14 +18,18 @@ export const styles: VirtualizedMessageListStyles = {
     display: 'flex',
     flexDirection: 'column',
   },
-  unreadHeader: {
-    padding: '12px 16px',
-    borderBottom: '1px solid #f0f0f0',
+  fullSize: {
+    width: '100%',
+    height: '100%',
   },
-  unreadText: {
-    fontSize: '12px',
-    color: '#8c8c8c',
-    fontWeight: 500,
-    textTransform: 'uppercase',
+  messageRow: {
+    padding: '8px 16px',
+    transition: 'none',
+    backgroundColor: 'transparent',
+  },
+  messageRowHighlighted: {
+    padding: '8px 16px',
+    transition: 'background-color 0.3s ease',
+    backgroundColor: 'rgba(24, 144, 255, 0.1)',
   },
 };
