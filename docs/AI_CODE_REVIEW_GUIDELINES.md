@@ -4,10 +4,12 @@
 Purpose: provide a structured checklist, prompts and example outputs so an AI reviewer can give useful, actionable feedback for PRs related to the chat application.
 
 1. Start of review: quick summary
+
 - Summarize the PR intent in 1–2 sentences.
 - List the main files changed and which layers they touch (domain, usecase, infra, UI).
 
 2. High-level checks
+
 - Build and tests:
   - Does the change break the build?
   - Do unit and integration tests pass (if included)?
@@ -26,6 +28,7 @@ Purpose: provide a structured checklist, prompts and example outputs so an AI re
   - Heavy serialization/deserialization should not block the main thread.
 
 3. Specific feature checks for chat app
+
 - Message arrival:
   - Verify handlers for window.postMessage and worker messages are present.
   - Ensure listeners are registered once and cleaned up on unmount.
@@ -42,6 +45,7 @@ Purpose: provide a structured checklist, prompts and example outputs so an AI re
   - Validate memory usage & render performance for 1,000+ messages.
 
 4. Checklist (yes/no style)
+
 - [ ] Build passes
 - [ ] Lint passes and formatting correct
 - [ ] Domain logic is pure
@@ -55,24 +59,28 @@ Purpose: provide a structured checklist, prompts and example outputs so an AI re
 - [ ] E2E/Playwright test scenarios included
 
 5. Severity & suggested remediation format
-For each issue found, provide:
+   For each issue found, provide:
+
 - Location: file and approximate line range or function name.
 - Problem: short description.
 - Severity: Critical / High / Medium / Low.
 - Suggested fix: brief code sketch or textual instructions.
 
 6. Automated fixes policy
+
 - Formatting and trivial lint fixes: OK to auto-suggest or auto-apply (prettier, eslint --fix).
 - Behavioral or architectural changes: propose code and rationale, but do not auto-apply without human approval.
 - For refactors larger than ~200 LOC, require a design note and human reviewer sign-off.
 
 7. Example AI prompts for reviewing a PR
+
 - "Summarize this PR and list potential regressions or breaking changes."
 - "Verify domain logic does not access localStorage or window directly. If it does, list files and suggest refactor."
 - "Check that worker message handling properly validates incoming data and cleans up listeners."
 - "List missing tests and provide sample unit test cases for critical flows."
 
 8. Example unit tests the AI should request or suggest
+
 - useChatMessages hook:
   - When a message is added via addMessage(), it appears in returned state.
   - When messages are loaded from repository, the hook returns them and preserves order.
@@ -82,6 +90,7 @@ For each issue found, provide:
   - When URL has messageId param, the chat scrolls to that message; when missing, nothing breaks.
 
 9. Example Playwright scenarios (text-based test cases)
+
 - Send message flow:
   - Open chat page, type message, click send — message appears in main area and left nav.
 - Receive via postMessage:
@@ -94,6 +103,7 @@ For each issue found, provide:
   - Navigate to /chat?messageId=<id> and verify the message is brought into view.
 
 10. How the AI should produce its review response
+
 - Format:
   - Short summary (1–2 lines)
   - Positive notes (what's good)
@@ -103,11 +113,13 @@ For each issue found, provide:
 - Be concise but actionable. Include code snippets when they clarify the fix.
 
 11. When the AI should escalate to a human
+
 - Architectural decisions that impact many modules (e.g., switching state management approach).
 - Complex security concerns or unclear requirements.
 - Large refactors (> ~200 LOC) or critical production bugs.
 
 12. Running the local checks (commands)
+
 - Install: npm install
 - Lint: npm run lint
 - Format check: npm run format:check
@@ -115,5 +127,5 @@ For each issue found, provide:
 - E2E (Playwright): npm run test:e2e
 
 13. Sample automated summary comment an AI could post on a PR
-"Summary: Adds worker transport and scroll-to-message-by-id. Positive: clear separation of UI and usecases. Issues: missing cleanup for worker event listener (high), no tests for scroll-to-id (medium). Suggested fixes: add cleanup in useEffect, add unit test for hook, and add Playwright scenario for scroll-to-id. Recommend changes required before merge."
+    "Summary: Adds worker transport and scroll-to-message-by-id. Positive: clear separation of UI and usecases. Issues: missing cleanup for worker event listener (high), no tests for scroll-to-id (medium). Suggested fixes: add cleanup in useEffect, add unit test for hook, and add Playwright scenario for scroll-to-id. Recommend changes required before merge."
 ```
