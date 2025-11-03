@@ -1,6 +1,4 @@
 import {
-  BookOutlined,
-  MenuOutlined,
   MessageOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
@@ -14,12 +12,13 @@ import { NavigationItem } from '../../molecules/NavigationItem';
 
 import { styles } from './styles';
 
+import { theme } from '@/constants/theme';
 import { resetData } from '@/utils/seedData';
 
 const { Title } = Typography;
 
 export const NavigationSidebar: React.FC = () => {
-  const { mockResponseService } = useChatContext();
+  const { mockResponseService, currentUser } = useChatContext();
   const [isPaused, setIsPaused] = useState(
     mockResponseService?.isPausedState() ?? false
   );
@@ -57,7 +56,7 @@ export const NavigationSidebar: React.FC = () => {
           badgeType='count'
         />
 
-        <NavigationItem
+        {/* <NavigationItem
           icon={<BookOutlined />}
           label='Stories'
           isActive={false}
@@ -69,10 +68,10 @@ export const NavigationSidebar: React.FC = () => {
           isActive={false}
           badge={true}
           badgeType='dot'
-        />
+        /> */}
 
         {/* Divider */}
-        <div style={{ borderTop: '1px solid #e8e8e8', margin: '8px 0' }} />
+        <div style={styles.divider} />
 
         {/* Seed Data Button */}
         <Tooltip title='Reset to default data' placement='right'>
@@ -85,22 +84,16 @@ export const NavigationSidebar: React.FC = () => {
                 handleSeedData();
               }
             }}
-            style={{
-              cursor: 'pointer',
-              padding: '8px',
-              borderRadius: '8px',
-              display: 'flex',
-              justifyContent: 'center',
-              transition: 'background-color 0.2s',
-            }}
+            style={styles.actionButton}
             onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = '#f0f0f0';
+              e.currentTarget.style.backgroundColor =
+                theme.colors.background.hoverLight;
             }}
             onMouseLeave={e => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
-            <ReloadOutlined style={{ fontSize: '20px', color: '#1976d2' }} />
+            <ReloadOutlined style={styles.reloadIcon} />
           </div>
         </Tooltip>
 
@@ -118,36 +111,28 @@ export const NavigationSidebar: React.FC = () => {
                 handleToggleMockResponse();
               }
             }}
-            style={{
-              cursor: 'pointer',
-              padding: '8px',
-              borderRadius: '8px',
-              display: 'flex',
-              justifyContent: 'center',
-              transition: 'background-color 0.2s',
-            }}
+            style={styles.actionButton}
             onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = '#f0f0f0';
+              e.currentTarget.style.backgroundColor =
+                theme.colors.background.hoverLight;
             }}
             onMouseLeave={e => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
             {isPaused ? (
-              <PlayCircleOutlined
-                style={{ fontSize: '20px', color: '#52c41a' }}
-              />
+              <PlayCircleOutlined style={styles.playIcon} />
             ) : (
-              <PauseCircleOutlined
-                style={{ fontSize: '20px', color: '#faad14' }}
-              />
+              <PauseCircleOutlined style={styles.pauseIcon} />
             )}
           </div>
         </Tooltip>
       </Space>
 
       <div style={styles.userAvatarContainer}>
-        <Avatar size={32} src='/api/placeholder/32/32' />
+        <Tooltip title={currentUser.name} placement='right'>
+          <Avatar size={32} src={currentUser.avatar} />
+        </Tooltip>
       </div>
     </div>
   );

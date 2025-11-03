@@ -9,6 +9,7 @@ export const theme = {
       tertiary: '#2a2a2a',
       card: '#3a3b3c',
       hover: '#4e4f50',
+      hoverLight: '#f0f0f0',
     },
     text: {
       primary: '#e4e6eb',
