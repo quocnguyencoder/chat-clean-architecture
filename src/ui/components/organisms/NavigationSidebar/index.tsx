@@ -52,8 +52,6 @@ export const NavigationSidebar: React.FC = () => {
           icon={<MessageOutlined />}
           label='Chats'
           isActive={true}
-          badge={3}
-          badgeType='count'
         />
 
         {/* <NavigationItem

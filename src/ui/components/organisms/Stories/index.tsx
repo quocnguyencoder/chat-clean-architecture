@@ -6,12 +6,14 @@ import { StoryItem } from '../../molecules/StoryItem';
 import { styles } from './styles';
 
 import type { Story } from '@/domain/entities/Story';
+import { useChatContext } from '@/ui/hooks';
 
 interface StoriesProps {
   stories: Story[];
 }
 
 export const Stories: React.FC<StoriesProps> = ({ stories }) => {
+  const { currentUser } = useChatContext();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -71,6 +73,7 @@ export const Stories: React.FC<StoriesProps> = ({ stories }) => {
       key='current-user'
       isCurrentUser={true}
       displayText='Your note'
+      avatarSrc={currentUser.avatar}
     />,
     ...stories.map(story => (
       <StoryItem
