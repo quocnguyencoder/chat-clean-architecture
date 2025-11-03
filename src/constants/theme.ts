@@ -2,17 +2,21 @@ export const theme = {
   colors: {
     primary: '#0084ff',
     success: '#44b700',
+    warning: '#ffc107',
     background: {
       main: '#1a1a1a',
       secondary: '#1e1e1e',
       tertiary: '#2a2a2a',
+      card: '#3a3b3c',
+      hover: '#4e4f50',
     },
     text: {
-      primary: '#fff',
-      secondary: '#8a8a8a',
-      muted: '#666',
+      primary: '#e4e6eb',
+      secondary: '#b0b3b8',
+      muted: '#8a8a8a',
+      inverse: '#000',
     },
-    border: '#2a2a2a',
+    border: '#4e4f50',
     gradient: {
       story:
         'linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d)',

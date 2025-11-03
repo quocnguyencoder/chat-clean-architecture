@@ -3,5 +3,7 @@ export { ChatList } from './ChatList';
 export { EmptyState } from './EmptyState';
 export { MessageInput } from './MessageInput';
 export { NavigationSidebar } from './NavigationSidebar';
+export { PeopleInChatModal } from './PeopleInChatModal';
+export { SearchConversationModal } from './SearchConversationModal';
 export { Stories } from './Stories';
 export { VirtualizedMessageList } from './VirtualizedMessageList';

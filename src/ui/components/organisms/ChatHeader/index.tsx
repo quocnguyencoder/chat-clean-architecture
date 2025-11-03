@@ -1,27 +1,35 @@
-import {
-  MoreOutlined,
-  PhoneOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons';
+import { InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Space, Typography } from 'antd';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { AvatarWithStatus } from '../../molecules/AvatarWithStatus';
+import { PeopleInChatModal } from '../PeopleInChatModal';
+import { SearchConversationModal } from '../SearchConversationModal';
 
 import { styles } from './styles';
 
 import { getStatusColor, getStatusText } from '@/constants/chatStatus';
 import type { Chat } from '@/domain/entities/Chat';
+import type { ChatParticipant } from '@/domain/entities/ChatParticipant';
+import type { Message } from '@/domain/entities/Message';
 import { useChatContext } from '@/ui/hooks';
 
 const { Text } = Typography;
 
 interface ChatHeaderProps {
   selectedChat: Chat;
+  chatMessages?: Message[];
+  chatParticipants?: ChatParticipant[];
 }
 
-export const ChatHeader: React.FC<ChatHeaderProps> = ({ selectedChat }) => {
+export const ChatHeader: React.FC<ChatHeaderProps> = ({
+  selectedChat,
+  chatMessages = [],
+  chatParticipants = [],
+}) => {
   const { onlineUsers } = useChatContext();
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isPeopleModalOpen, setIsPeopleModalOpen] = useState(false);
 
   // Determine if the chat user is online based on onlineUsers from context
   const isUserOnline = useMemo(() => {
@@ -49,26 +57,27 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ selectedChat }) => {
   );
 
   return (
-    <div style={styles.container}>
-      <div style={styles.userInfo}>
-        <AvatarWithStatus
-          size={48}
-          src={selectedChat.avatar}
-          isOnline={isUserOnline}
-          statusSize='large'
-          style={styles.avatarContainer}
-        />
-        <div style={styles.userDetails}>
-          <Text strong style={styles.userName}>
-            {selectedChat.name}
-          </Text>
-          <Text style={{ ...styles.userStatus, color: statusColor }}>
-            {statusText}
-          </Text>
+    <>
+      <div style={styles.container}>
+        <div style={styles.userInfo}>
+          <AvatarWithStatus
+            size={48}
+            src={selectedChat.avatar}
+            isOnline={isUserOnline}
+            statusSize='large'
+            style={styles.avatarContainer}
+          />
+          <div style={styles.userDetails}>
+            <Text strong style={styles.userName}>
+              {selectedChat.name}
+            </Text>
+            <Text style={{ ...styles.userStatus, color: statusColor }}>
+              {statusText}
+            </Text>
+          </div>
         </div>
-      </div>
-      <Space style={styles.actions}>
-        <Button
+        <Space style={styles.actions}>
+          {/* <Button
           type='text'
           icon={<PhoneOutlined />}
           style={styles.actionButton.primary}
@@ -77,13 +86,37 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ selectedChat }) => {
           type='text'
           icon={<VideoCameraOutlined />}
           style={styles.actionButton.primary}
-        />
-        <Button
-          type='text'
-          icon={<MoreOutlined />}
-          style={styles.actionButton.secondary}
-        />
-      </Space>
-    </div>
+        /> */}
+          <Button
+            type='text'
+            icon={<SearchOutlined />}
+            style={styles.actionButton.secondary}
+            onClick={() => setIsSearchModalOpen(true)}
+          />
+          {selectedChat.isGroup && (
+            <Button
+              type='text'
+              icon={<InfoCircleOutlined />}
+              style={styles.actionButton.secondary}
+              onClick={() => setIsPeopleModalOpen(true)}
+            />
+          )}
+        </Space>
+      </div>
+
+      <SearchConversationModal
+        open={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+        messages={chatMessages}
+        chatId={selectedChat.id}
+      />
+
+      <PeopleInChatModal
+        open={isPeopleModalOpen}
+        onClose={() => setIsPeopleModalOpen(false)}
+        participants={chatParticipants}
+        chatName={selectedChat.name}
+      />
+    </>
   );
 };

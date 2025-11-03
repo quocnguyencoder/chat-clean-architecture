@@ -131,7 +131,11 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
           <>
             {/* Chat Header */}
             <Header style={styles.chatHeader}>
-              <ChatHeader selectedChat={selectedChatData} />
+              <ChatHeader
+                selectedChat={selectedChatData}
+                chatMessages={chatDetail?.messages || []}
+                chatParticipants={chatDetail?.participants || []}
+              />
             </Header>
 
             {/* Messages Area */}

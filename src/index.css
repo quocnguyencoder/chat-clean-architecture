@@ -20,3 +20,9 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+/* Search input placeholder styling */
+.search-input-placeholder::placeholder {
+  color: #e4e6eb !important;
+  opacity: 0.6;
+}
