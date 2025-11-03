@@ -53,5 +53,8 @@ export const theme = {
       minWidth: 20,
       height: 20,
     },
+    story: {
+      itemWidth: 80,
+    },
   },
 } as const;

@@ -5,6 +5,7 @@ import { StoryItem } from '../../molecules/StoryItem';
 
 import { styles } from './styles';
 
+import { theme } from '@/constants/theme';
 import type { Story } from '@/domain/entities/Story';
 import { useChatContext } from '@/ui/hooks';
 
@@ -19,8 +20,6 @@ export const Stories: React.FC<StoriesProps> = ({ stories }) => {
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
-  const itemWidth = 80; // Approximate width of each story item including gap
-
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } =
@@ -32,7 +31,7 @@ export const Stories: React.FC<StoriesProps> = ({ stories }) => {
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      const scrollAmount = itemWidth * 3; // Scroll 3 items at a time
+      const scrollAmount = theme.sizes.story.itemWidth * 3; // Scroll 3 items at a time
       scrollContainerRef.current.scrollBy({
         left: -scrollAmount,
         behavior: 'smooth',
@@ -42,7 +41,7 @@ export const Stories: React.FC<StoriesProps> = ({ stories }) => {
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      const scrollAmount = itemWidth * 3; // Scroll 3 items at a time
+      const scrollAmount = theme.sizes.story.itemWidth * 3; // Scroll 3 items at a time
       scrollContainerRef.current.scrollBy({
         left: scrollAmount,
         behavior: 'smooth',
