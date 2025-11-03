@@ -27,6 +27,8 @@ interface VirtualizedMessageListProps {
   scrollToMessageId?: string | null;
   onScrollToComplete?: () => void;
   isGroupChat?: boolean;
+  hasMessageIdInUrl?: boolean;
+  highlightMessageId?: string | null;
 }
 
 export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
@@ -34,6 +36,8 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
   scrollToMessageId,
   onScrollToComplete,
   isGroupChat = true,
+  hasMessageIdInUrl = false,
+  highlightMessageId = null,
 }) => {
   const listRef = useRef<List | null>(null);
   const previousMessageCountRef = useRef<number>(0);
@@ -59,18 +63,39 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
       );
 
       if (messageIndex !== -1) {
-        // Scroll to the message
+        // First scroll to the row to ensure it's visible
         listRef.current.scrollToRow(messageIndex);
+
+        // Then adjust to center it
+        setTimeout(() => {
+          if (listRef.current && listRef.current.Grid) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const grid = listRef.current.Grid as any;
+            const clientHeight = grid.props.height || 600;
+            const rowHeight = cache.rowHeight({ index: messageIndex });
+            const currentScrollTop = grid.state.scrollTop || 0;
+
+            // Calculate offset to center the message
+            const messageHeight =
+              typeof rowHeight === 'number' ? rowHeight : 100;
+            const centeredScrollTop =
+              currentScrollTop - (clientHeight / 2 - messageHeight / 2);
+
+            grid.scrollToPosition({
+              scrollTop: Math.max(0, centeredScrollTop),
+            });
+          }
+        }, 100);
 
         // Notify parent that scroll is complete
         if (onScrollToComplete) {
           setTimeout(() => {
             onScrollToComplete();
-          }, 300); // Give time for scroll animation
+          }, 400); // Give time for scroll animation
         }
       }
     }
-  }, [scrollToMessageId, messages, onScrollToComplete]);
+  }, [scrollToMessageId, messages, onScrollToComplete, cache]);
 
   /**
    * Scroll to bottom when new messages arrive
@@ -82,6 +107,7 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
       messages.length > 0 &&
       listRef.current &&
       !scrollToMessageId &&
+      !hasMessageIdInUrl &&
       !hasScrolledToBottomRef.current
     ) {
       setTimeout(() => {
@@ -99,6 +125,7 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
       messages.length > 0 &&
       listRef.current &&
       !scrollToMessageId &&
+      !hasMessageIdInUrl &&
       previousMessageCountRef.current > 0 &&
       messages.length > previousMessageCountRef.current
     ) {
@@ -112,7 +139,7 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
 
     // Update previous count
     previousMessageCountRef.current = messages.length;
-  }, [messages.length, scrollToMessageId]);
+  }, [messages.length, scrollToMessageId, hasMessageIdInUrl]);
 
   /**
    * Clear cache only for new messages (not all messages)
@@ -136,7 +163,7 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
    */
   const rowRenderer = ({ index, key, style, parent }: ListRowProps) => {
     const message = messages[index];
-    const isHighlighted = scrollToMessageId === message.id;
+    const isHighlighted = highlightMessageId === message.id;
 
     return (
       <CellMeasurer

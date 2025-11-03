@@ -4,6 +4,8 @@
 
 import type { CSSProperties } from 'react';
 
+import { theme } from '@/constants/theme';
+
 interface VirtualizedMessageListStyles {
   container: CSSProperties;
   fullSize: CSSProperties;
@@ -30,6 +32,7 @@ export const styles: VirtualizedMessageListStyles = {
   messageRowHighlighted: {
     padding: '8px 16px',
     transition: 'background-color 0.3s ease',
-    backgroundColor: 'rgba(24, 144, 255, 0.1)',
+    backgroundColor: theme.colors.background.card,
+    borderLeft: `3px solid ${theme.colors.primary}`,
   },
 };

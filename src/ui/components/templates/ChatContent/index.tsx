@@ -75,6 +75,11 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
   const handleSendMessage = async () => {
     if (messageText.trim() && selectedChat) {
       try {
+        // Clear messageId from URL to allow scrolling to bottom
+        if (messageIdFromUrl) {
+          navigate(`?${URL_PARAMS.CHAT_ID}=${selectedChat}`, { replace: true });
+        }
+
         // Send the message using the use case
         await sendMessageUseCase.execute(
           selectedChat,
@@ -103,11 +108,8 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
   };
 
   const handleScrollToComplete = () => {
-    // Clear the scroll target and remove messageId from URL
+    // Clear the scroll target only (keep messageId in URL)
     setScrollToMessageId(null);
-    if (messageIdFromUrl && selectedChat) {
-      navigate(`?${URL_PARAMS.CHAT_ID}=${selectedChat}`, { replace: true });
-    }
   };
 
   return (
@@ -148,6 +150,8 @@ export const ChatContent: React.FC<MainLayoutProps> = () => {
                 detailLoading={detailLoading}
                 scrollToMessageId={scrollToMessageId}
                 onScrollToComplete={handleScrollToComplete}
+                hasMessageIdInUrl={!!messageIdFromUrl}
+                highlightMessageId={messageIdFromUrl}
               />
             </Content>
           </>

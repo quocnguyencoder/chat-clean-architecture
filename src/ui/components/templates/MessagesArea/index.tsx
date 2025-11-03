@@ -17,6 +17,8 @@ interface MessagesAreaProps {
   detailLoading?: boolean;
   scrollToMessageId?: string | null;
   onScrollToComplete?: () => void;
+  hasMessageIdInUrl?: boolean;
+  highlightMessageId?: string | null;
 }
 
 export const MessagesArea: React.FC<MessagesAreaProps> = ({
@@ -27,6 +29,8 @@ export const MessagesArea: React.FC<MessagesAreaProps> = ({
   detailLoading = false,
   scrollToMessageId,
   onScrollToComplete,
+  hasMessageIdInUrl = false,
+  highlightMessageId = null,
 }) => {
   if (detailLoading) {
     return (
@@ -53,15 +57,17 @@ export const MessagesArea: React.FC<MessagesAreaProps> = ({
   return (
     <div style={styles.container}>
       <div style={styles.virtualizedContainer}>
-        <div style={styles.virtualizedHeader}>
+        {/* <div style={styles.virtualizedHeader}>
           <Text style={styles.unreadText}>Unread messages</Text>
-        </div>
+        </div> */}
         <div style={styles.virtualizedListWrapper}>
           <VirtualizedMessageList
             messages={chatDetail.messages}
             scrollToMessageId={scrollToMessageId || null}
             onScrollToComplete={onScrollToComplete}
             isGroupChat={isGroupChat}
+            hasMessageIdInUrl={hasMessageIdInUrl}
+            highlightMessageId={highlightMessageId}
           />
         </div>
       </div>
