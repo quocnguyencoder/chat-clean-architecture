@@ -25,9 +25,25 @@ export const styles = {
     borderRadius: '8px',
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
     transition: 'background-color 0.2s',
   } as CSSProperties,
+  uploadWrapper: {
+    display: 'block',
+    width: '100%',
+  } as CSSProperties,
+  uploadButton: {
+    width: '100%',
+  } as CSSProperties,
   reloadIcon: {
+    fontSize: '20px',
+    color: '#1976d2',
+  } as CSSProperties,
+  exportIcon: {
+    fontSize: '20px',
+    color: '#52c41a',
+  } as CSSProperties,
+  importIcon: {
     fontSize: '20px',
     color: '#1976d2',
   } as CSSProperties,
