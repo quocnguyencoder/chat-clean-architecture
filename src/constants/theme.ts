@@ -3,6 +3,10 @@ export const theme = {
     primary: '#0084ff',
     success: '#44b700',
     warning: '#ffc107',
+    error: '#ff4d4f',
+    info: '#1976d2',
+    successLight: '#52c41a',
+    warningDark: '#faad14',
     background: {
       main: '#1a1a1a',
       secondary: '#1e1e1e',
@@ -16,8 +20,11 @@ export const theme = {
       secondary: '#b0b3b8',
       muted: '#8a8a8a',
       inverse: '#000',
+      white: '#ffffff',
     },
     border: '#4e4f50',
+    divider: '#e8e8e8',
+    mask: 'rgba(0, 0, 0, 0.6)',
     gradient: {
       story:
         'linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d)',

@@ -1,5 +1,6 @@
 import {
   DownloadOutlined,
+  ExclamationCircleOutlined,
   MessageOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
@@ -7,7 +8,15 @@ import {
   UploadOutlined,
 } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
-import { Avatar, Space, Tooltip, Typography, Upload, message } from 'antd';
+import {
+  Avatar,
+  message,
+  Modal,
+  Space,
+  Tooltip,
+  Typography,
+  Upload,
+} from 'antd';
 import { useState } from 'react';
 
 import { useChatContext } from '../../../hooks/useChatContext';
@@ -29,11 +38,20 @@ export const NavigationSidebar: React.FC = () => {
   const [isPaused, setIsPaused] = useState(
     mockResponseService?.isPausedState() ?? false
   );
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
   const handleSeedData = () => {
+    setIsResetModalOpen(true);
+  };
+
+  const handleResetConfirm = () => {
+    setIsResetModalOpen(false);
     message.loading('Resetting data...', 0.5);
-    // resetData() will clear localStorage, seed data, and refresh automatically
     resetData();
+  };
+
+  const handleResetCancel = () => {
+    setIsResetModalOpen(false);
   };
 
   const handleToggleMockResponse = () => {
@@ -225,6 +243,54 @@ export const NavigationSidebar: React.FC = () => {
           <Avatar size={32} src={currentUser.avatar} />
         </Tooltip>
       </div>
+
+      {/* Reset Confirmation Modal */}
+      <Modal
+        title={
+          <span style={{ color: theme.colors.text.primary }}>
+            Reset to Default Data
+          </span>
+        }
+        open={isResetModalOpen}
+        onOk={handleResetConfirm}
+        onCancel={handleResetCancel}
+        okText='Reset'
+        cancelText='Cancel'
+        okType='danger'
+        centered
+        styles={{
+          content: {
+            backgroundColor: theme.colors.background.secondary,
+          },
+          header: {
+            backgroundColor: theme.colors.background.secondary,
+            marginBottom: 16,
+          },
+          body: {
+            backgroundColor: theme.colors.background.secondary,
+            color: theme.colors.text.primary,
+          },
+          footer: {
+            backgroundColor: theme.colors.background.secondary,
+          },
+          mask: {
+            backgroundColor: theme.colors.mask,
+          },
+        }}
+        closeIcon={
+          <span style={{ color: theme.colors.text.primary, fontSize: '16px' }}>
+            ✕
+          </span>
+        }
+      >
+        <div style={styles.modalContent}>
+          <ExclamationCircleOutlined style={styles.modalWarningIcon} />
+          <span style={{ color: theme.colors.text.primary }}>
+            This will delete all current data and reset to default. This action
+            cannot be undone. Are you sure?
+          </span>
+        </div>
+      </Modal>
     </div>
   );
 };
