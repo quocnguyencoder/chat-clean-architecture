@@ -21,6 +21,17 @@ import { MessageBubble } from '../../molecules/MessageBubble';
 import { styles } from './styles';
 
 import type { Message } from '@/domain/entities/Message';
+import {
+  formatTimestampHeader,
+  shouldShowTimestamp,
+} from '@/utils/messageTimestamp';
+
+interface MessageWithTimestamp {
+  type: 'message' | 'timestamp';
+  message?: Message;
+  timestamp?: string;
+  index: number; // Original message index for cache
+}
 
 interface VirtualizedMessageListProps {
   messages: Message[];
@@ -53,18 +64,45 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
     []
   );
 
+  // Create array of messages with timestamp headers
+  const messagesWithTimestamps = useMemo(() => {
+    const result: MessageWithTimestamp[] = [];
+
+    messages.forEach((message, index) => {
+      const previousMessage = index > 0 ? messages[index - 1] : null;
+
+      if (shouldShowTimestamp(message, previousMessage)) {
+        result.push({
+          type: 'timestamp',
+          timestamp: formatTimestampHeader(message.time),
+          index,
+        });
+      }
+
+      result.push({
+        type: 'message',
+        message,
+        index,
+      });
+    });
+
+    return result;
+  }, [messages]);
+
   /**
    * Scroll to a specific message by ID
    */
   useEffect(() => {
     if (scrollToMessageId && messages.length > 0 && listRef.current) {
-      const messageIndex = messages.findIndex(
-        msg => msg.id === scrollToMessageId
+      // Find the index in the messagesWithTimestamps array
+      const rowIndex = messagesWithTimestamps.findIndex(
+        item =>
+          item.type === 'message' && item.message?.id === scrollToMessageId
       );
 
-      if (messageIndex !== -1) {
+      if (rowIndex !== -1) {
         // First scroll to the row to ensure it's visible
-        listRef.current.scrollToRow(messageIndex);
+        listRef.current.scrollToRow(rowIndex);
 
         // Then adjust to center it
         setTimeout(() => {
@@ -72,7 +110,7 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const grid = listRef.current.Grid as any;
             const clientHeight = grid.props.height || 600;
-            const rowHeight = cache.rowHeight({ index: messageIndex });
+            const rowHeight = cache.rowHeight({ index: rowIndex });
             const currentScrollTop = grid.state.scrollTop || 0;
 
             // Calculate offset to center the message
@@ -95,7 +133,13 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
         }
       }
     }
-  }, [scrollToMessageId, messages, onScrollToComplete, cache]);
+  }, [
+    scrollToMessageId,
+    messages,
+    onScrollToComplete,
+    cache,
+    messagesWithTimestamps,
+  ]);
 
   /**
    * Scroll to bottom when new messages arrive
@@ -112,7 +156,7 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
     ) {
       setTimeout(() => {
         if (listRef.current) {
-          listRef.current.scrollToRow(messages.length - 1);
+          listRef.current.scrollToRow(messagesWithTimestamps.length - 1);
           hasScrolledToBottomRef.current = true;
           previousMessageCountRef.current = messages.length;
         }
@@ -132,14 +176,19 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
       // New message added, scroll to bottom
       setTimeout(() => {
         if (listRef.current) {
-          listRef.current.scrollToRow(messages.length - 1);
+          listRef.current.scrollToRow(messagesWithTimestamps.length - 1);
         }
       }, 100);
     }
 
     // Update previous count
     previousMessageCountRef.current = messages.length;
-  }, [messages.length, scrollToMessageId, hasMessageIdInUrl]);
+  }, [
+    messages.length,
+    scrollToMessageId,
+    hasMessageIdInUrl,
+    messagesWithTimestamps.length,
+  ]);
 
   /**
    * Clear cache only for new messages (not all messages)
@@ -159,10 +208,28 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
   }, [messages.length, cache]);
 
   /**
-   * Row renderer for each message
+   * Row renderer for each message or timestamp
    */
   const rowRenderer = ({ index, key, style, parent }: ListRowProps) => {
-    const message = messages[index];
+    const item = messagesWithTimestamps[index];
+
+    if (item.type === 'timestamp') {
+      return (
+        <CellMeasurer
+          key={key}
+          cache={cache}
+          parent={parent}
+          columnIndex={0}
+          rowIndex={index}
+        >
+          <div style={{ ...style, ...styles.timestampRow }}>
+            <div style={styles.timestampText}>{item.timestamp}</div>
+          </div>
+        </CellMeasurer>
+      );
+    }
+
+    const message = item.message!;
     const isHighlighted = highlightMessageId === message.id;
 
     return (
@@ -201,7 +268,7 @@ export const VirtualizedMessageList: React.FC<VirtualizedMessageListProps> = ({
             ref={listRef}
             width={width}
             height={height}
-            rowCount={messages.length}
+            rowCount={messagesWithTimestamps.length}
             deferredMeasurementCache={cache}
             rowHeight={cache.rowHeight}
             rowRenderer={rowRenderer}
