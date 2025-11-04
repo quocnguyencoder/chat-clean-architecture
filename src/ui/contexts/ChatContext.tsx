@@ -15,7 +15,6 @@ import React, {
 } from 'react';
 
 import type { Chat } from '@/domain/entities/Chat';
-import type { ChatDetail } from '@/domain/entities/ChatDetail';
 import type { Story } from '@/domain/entities/Story';
 import type { UserStatus } from '@/domain/entities/UserStatus';
 import { messageEventService } from '@/infrastructure/services';
@@ -72,9 +71,8 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
   messagesRepository,
   userStatusRepository,
 }) => {
-  // Ref to store chats and chat details for the mock service
+  // Ref to store chats for the mock service
   const chatsRef = useRef<Chat[]>([]);
-  const chatDetailsRef = useRef<Map<string, ChatDetail>>(new Map());
 
   // State for online users and stories
   const [onlineUsers, setOnlineUsers] = useState<UserStatus[]>([]);
@@ -117,10 +115,10 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
       new MockResponseService(
         receiveMessageUseCase,
         chatRepository,
-        () => chatsRef.current,
-        (chatId: string) => chatDetailsRef.current.get(chatId) || null
+        participantsRepository,
+        () => chatsRef.current
       ),
-    [receiveMessageUseCase, chatRepository]
+    [receiveMessageUseCase, chatRepository, participantsRepository]
   );
 
   const contextValue: ChatContextValue = useMemo(

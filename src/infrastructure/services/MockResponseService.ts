@@ -8,13 +8,8 @@
 
 import { mockConfig } from '@/config/mockConfig';
 import type { Chat } from '@/domain/entities/Chat';
-import type { ChatDetail } from '@/domain/entities/ChatDetail';
-import {
-  CURRENT_USER,
-  getRandomAutoMessage,
-  getRandomOtherUser,
-  getRandomResponse,
-} from '@/mocks';
+import { CURRENT_USER, getRandomAutoMessage, getRandomResponse } from '@/mocks';
+import type { ChatParticipantsRepository } from '@/ports/ChatParticipantsRepository';
 import type { ChatRepository } from '@/ports/ChatRepository';
 import type { ReceiveMessageUseCase } from '@/usecases/ReceiveMessageUseCase';
 import { getRandomResponseDelay } from '@/utils/mockHelpers';
@@ -34,22 +29,22 @@ interface MessageEvent extends CustomEvent {
 export class MockResponseService {
   private receiveMessageUseCase: ReceiveMessageUseCase;
   private chatRepository: ChatRepository;
+  private participantsRepository: ChatParticipantsRepository;
   private autoSendInterval: number | null = null;
   private getChatsFn: () => Chat[];
-  private getChatDetailFn: (chatId: string) => ChatDetail | null;
   private isPaused: boolean = false;
   private boundHandleNewMessage: EventListener;
 
   constructor(
     receiveMessageUseCase: ReceiveMessageUseCase,
     chatRepository: ChatRepository,
-    getChatsFn: () => Chat[],
-    getChatDetailFn: (chatId: string) => ChatDetail | null
+    participantsRepository: ChatParticipantsRepository,
+    getChatsFn: () => Chat[]
   ) {
     this.receiveMessageUseCase = receiveMessageUseCase;
     this.chatRepository = chatRepository;
+    this.participantsRepository = participantsRepository;
     this.getChatsFn = getChatsFn;
-    this.getChatDetailFn = getChatDetailFn;
     // Initialize with config value
     this.isPaused = mockConfig.behavior.startPaused;
     // Bind the handler once in constructor
@@ -159,7 +154,7 @@ export class MockResponseService {
         const responseText = getRandomResponse(originalMessage);
 
         // Determine sender
-        const { senderId, senderName } = this.determineSender(
+        const { senderId, senderName } = await this.determineSender(
           targetChat,
           chatId
         );
@@ -247,7 +242,7 @@ export class MockResponseService {
       const randomMessage = getRandomAutoMessage();
 
       // Determine sender using the same logic as responses
-      const { senderId, senderName } = this.determineSender(
+      const { senderId, senderName } = await this.determineSender(
         randomChat,
         randomChat.id
       );
@@ -288,16 +283,18 @@ export class MockResponseService {
   /**
    * Determine sender based on chat type and participants
    */
-  private determineSender(
+  private async determineSender(
     chat: Chat,
     chatId: string
-  ): { senderId: string; senderName: string } {
-    // For group chat, get a random participant
+  ): Promise<{ senderId: string; senderName: string }> {
+    // For group chat, get a random participant from localStorage
     if (chat.isGroup) {
-      const chatDetail = this.getChatDetailFn(chatId);
-      if (chatDetail?.participants) {
+      try {
+        const participants =
+          await this.participantsRepository.getByChatId(chatId);
+
         // Filter out current user from participants
-        const otherParticipants = chatDetail.participants.filter(
+        const otherParticipants = participants.filter(
           participant => participant.id !== CURRENT_USER.id
         );
 
@@ -312,10 +309,16 @@ export class MockResponseService {
             senderName: randomParticipant.name,
           };
         }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to get participants:', error);
       }
 
-      // Fallback to random user from mock data if no participants found
-      return this.getGroupSender();
+      // Fallback: create a generic group member if no participants found
+      return {
+        senderId: `${chatId}-member`,
+        senderName: 'Group Member',
+      };
     }
 
     // For 1-on-1 chat, use the chat contact
@@ -332,17 +335,6 @@ export class MockResponseService {
     return {
       senderId: this.generateSenderId(chatId),
       senderName: chatName,
-    };
-  }
-
-  /**
-   * Get sender info for group chat (random member)
-   */
-  private getGroupSender(): { senderId: string; senderName: string } {
-    const randomUser = getRandomOtherUser();
-    return {
-      senderId: randomUser.id,
-      senderName: randomUser.name,
     };
   }
 
