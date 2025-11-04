@@ -57,6 +57,9 @@ export const ChatList: React.FC<ChatListProps> = ({
         placeholder='Search'
         prefix={<SearchOutlined style={styles.searchIcon} />}
         style={styles.searchInput}
+        classNames={{
+          input: 'search-input-placeholder',
+        }}
       />
 
       {/* Status Stories */}

@@ -36,6 +36,14 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         onChange={e => onChange(e.target.value)}
         onPressEnter={onSend}
         style={styles.input}
+        styles={{
+          input: {
+            color: 'inherit',
+          },
+        }}
+        classNames={{
+          input: 'message-input-placeholder',
+        }}
         suffix={<ActionButton icon={<SmileOutlined />} />}
       />
 

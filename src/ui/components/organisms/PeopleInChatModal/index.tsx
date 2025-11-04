@@ -87,7 +87,6 @@ export const PeopleInChatModal: React.FC<PeopleInChatModalProps> = ({
         header: {
           backgroundColor: theme.colors.background.secondary,
           color: theme.colors.text.primary,
-          borderBottom: `1px solid ${theme.colors.border}`,
         },
       }}
     >

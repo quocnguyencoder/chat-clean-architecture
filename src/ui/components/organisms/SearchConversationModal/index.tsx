@@ -109,7 +109,6 @@ export const SearchConversationModal: React.FC<
         header: {
           backgroundColor: theme.colors.background.secondary,
           color: theme.colors.text.primary,
-          borderBottom: `1px solid ${theme.colors.border}`,
         },
       }}
     >

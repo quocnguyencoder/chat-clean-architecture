@@ -1,10 +1,10 @@
 import {
-  DownloadOutlined,
   ExclamationCircleOutlined,
   MessageOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
   ReloadOutlined,
+  SaveOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
@@ -153,7 +153,7 @@ export const NavigationSidebar: React.FC = () => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
           >
-            <DownloadOutlined style={styles.exportIcon} />
+            <SaveOutlined style={styles.exportIcon} />
           </div>
         </Tooltip>
 

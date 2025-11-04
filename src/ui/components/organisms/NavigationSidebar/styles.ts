@@ -42,11 +42,11 @@ export const styles = {
   } as CSSProperties,
   exportIcon: {
     fontSize: '20px',
-    color: theme.colors.successLight,
+    color: theme.colors.info,
   } as CSSProperties,
   importIcon: {
     fontSize: '20px',
-    color: theme.colors.info,
+    color: theme.colors.successLight,
   } as CSSProperties,
   playIcon: {
     fontSize: '20px',
