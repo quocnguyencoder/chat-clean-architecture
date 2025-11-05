@@ -23,21 +23,30 @@ export class MessageEventService {
   private listeners: Set<MessageEventHandler> = new Set();
   private isListening = false;
   private workerRef: Worker | null = null;
+  private workerConfig = {
+    enableDemo: false,
+    url: '', // WebSocket URL or API endpoint
+  };
 
   /**
    * Start listening for messages from all sources
    */
-  startListening(): void {
+  startListening(config?: { enableDemo?: boolean; url?: string }): void {
     if (this.isListening) {
       return;
     }
 
     this.isListening = true;
 
+    // Update worker config if provided
+    if (config) {
+      this.workerConfig = { ...this.workerConfig, ...config };
+    }
+
     // Listen for postMessage events
     window.addEventListener('message', this.handlePostMessage);
 
-    // Initialize worker if available (placeholder for actual worker setup)
+    // Initialize worker
     this.initializeWorker();
   }
 
@@ -104,22 +113,120 @@ export class MessageEventService {
   };
 
   /**
-   * Initialize transport worker (placeholder)
+   * Initialize transport worker
    */
   private initializeWorker(): void {
-    // This is a placeholder for actual worker initialization
-    // In a real application, you would create and configure a worker here
-    // Example:
-    // this.workerRef = new Worker('/transport-worker.js');
-    // this.workerRef.onmessage = (event: MessageEvent) => {
-    //   if (!this.isValidMessage(event.data)) return;
-    //   try {
-    //     const messageData = this.parseMessageEvent(event.data);
-    //     if (messageData) this.notifyListeners(messageData);
-    //   } catch {
-    //     // Silently handle parsing errors
-    //   }
-    // };
+    try {
+      // Create worker from public directory
+      this.workerRef = new Worker('/transport-worker.js');
+
+      // Handle messages from worker
+      this.workerRef.onmessage = (event: MessageEvent) => {
+        const { type, payload } = event.data;
+
+        switch (type) {
+          case 'INCOMING_MESSAGE':
+            // Message received from transport layer
+            if (this.isValidMessage(payload)) {
+              const messageData = this.parseMessageEvent(payload);
+              if (messageData) {
+                this.notifyListeners(messageData);
+              }
+            }
+            break;
+
+          case 'CONNECTION_STATUS':
+            // eslint-disable-next-line no-console
+            console.log(
+              '[MessageEventService] Worker connection status:',
+              payload
+            );
+            break;
+
+          case 'ERROR':
+            // eslint-disable-next-line no-console
+            console.error('[MessageEventService] Worker error:', payload);
+            break;
+
+          case 'RECONNECTING':
+            // eslint-disable-next-line no-console
+            console.log('[MessageEventService] Worker reconnecting:', payload);
+            break;
+
+          case 'CONNECTION_FAILED':
+            // eslint-disable-next-line no-console
+            console.error(
+              '[MessageEventService] Worker connection failed:',
+              payload
+            );
+            break;
+
+          case 'MESSAGE_SENT':
+            // eslint-disable-next-line no-console
+            console.log('[MessageEventService] Message sent:', payload);
+            break;
+
+          case 'PONG':
+            // Health check response
+            break;
+
+          default:
+            // eslint-disable-next-line no-console
+            console.warn('[MessageEventService] Unknown worker message:', type);
+        }
+      };
+
+      // Handle worker errors
+      this.workerRef.onerror = (error: ErrorEvent) => {
+        // eslint-disable-next-line no-console
+        console.error('[MessageEventService] Worker error:', error);
+      };
+
+      // Initialize worker with config
+      this.workerRef.postMessage({
+        type: 'INIT',
+        payload: this.workerConfig,
+      });
+
+      // eslint-disable-next-line no-console
+      console.log('[MessageEventService] Worker initialized');
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(
+        '[MessageEventService] Failed to initialize worker:',
+        error
+      );
+      // Service will continue to work with just postMessage API
+    }
+  }
+
+  /**
+   * Send message through worker
+   */
+  sendThroughWorker(messageData: IncomingMessageData): void {
+    if (!this.workerRef) {
+      // eslint-disable-next-line no-console
+      console.warn('[MessageEventService] Worker not available');
+      return;
+    }
+
+    this.workerRef.postMessage({
+      type: 'SEND_MESSAGE',
+      payload: messageData,
+    });
+  }
+
+  /**
+   * Health check for worker
+   */
+  pingWorker(): void {
+    if (!this.workerRef) {
+      return;
+    }
+
+    this.workerRef.postMessage({
+      type: 'PING',
+    });
   }
 
   /**

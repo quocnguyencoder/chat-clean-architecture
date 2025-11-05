@@ -1,0 +1,16 @@
+# ESLint ignore file
+
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Worker files (plain JS, not TypeScript)
+public/transport-worker.js
+
+# Example files
+docs/examples/
+
+# Generated files
+*.min.js
+*.bundle.js
