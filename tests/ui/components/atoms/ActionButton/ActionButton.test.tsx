@@ -4,9 +4,8 @@
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { ActionButton } from './index';
-
 import { render, screen } from '@/test/test-utils';
+import { ActionButton } from '@/ui/components/atoms/ActionButton';
 
 describe('ActionButton', () => {
   describe('Rendering', () => {

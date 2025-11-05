@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ui/components/atoms/OnlineStatusIndicator/styles.ts</title>
+    <title>Code coverage report for utils/initializeUserStatus.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../../../prettify.css" />
-    <link rel="stylesheet" href="../../../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.png" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../../../sort-arrow-sprite.png);
+            background-image: url(../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">ui/components/atoms/OnlineStatusIndicator</a> styles.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> initializeUserStatus.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -95,17 +95,10 @@
 <a name='L30'></a><a href='#L30'>30</a>
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -117,48 +110,58 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { CSSProperties } from 'react';
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+ * Initialize User Status Data
+ *
+ * This utility initializes the UserStatusRepository with mock data
+ * if no data exists in storage.
+ */
 &nbsp;
-import { theme } from '@/constants/theme';
+import { mockUserStatuses } from '@/mocks/userStatuses';
+import type { UserStatusRepository } from '@/ports/UserStatusRepository';
 &nbsp;
-const sizeConfig = {
-  small: { width: 12, height: 12, borderWidth: 1 },
-  medium: { width: 14, height: 14, borderWidth: 2 },
-  large: { width: 16, height: 16, borderWidth: 2 },
-};
+const STORAGE_KEY = 'chat-user-statuses';
 &nbsp;
-const baseStyles: CSSProperties = {
-  position: 'absolute',
-  bottom: 2,
-  right: 2,
-  borderRadius: theme.borderRadius.circle,
-  background: theme.colors.success,
-};
+/**
+ * Initialize user status data in the repository if not already present
+ */
+export async function initializeUserStatusData(
+  repository: UserStatusRepository
+): Promise&lt;void&gt; {
+  // Check if data already exists in storage
+  const existingData = localStorage.getItem(STORAGE_KEY);
 &nbsp;
-export const getStyles = (
-  size: 'small' | 'medium' | 'large',
-  customStyle?: CSSProperties
-): CSSProperties =&gt; {
-  const config = sizeConfig[size];
+  if (!existingData || existingData === '[]') {
+    // Initialize with mock data
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(mockUserStatuses));
 &nbsp;
-  return {
-    ...baseStyles,
-    width: config.width,
-    height: config.height,
-    border: `${config.borderWidth}px solid ${theme.colors.background.secondary}`,
-    ...customStyle,
-  };
-};
+    // Verify by loading through repository
+    const statuses = await repository.getAllUserStatuses();
+    // eslint-disable-next-line no-console
+    console.log(
+      `Initialized ${statuses.length} user statuses in the repository`
+    );
+  }
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -168,14 +171,14 @@ export const getStyles = (
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
                 at 2025-11-05T02:40:09.571Z
             </div>
-        <script src="../../../../prettify.js"></script>
+        <script src="../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../../../sorter.js"></script>
-        <script src="../../../../block-navigation.js"></script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
     </body>
 </html>
     

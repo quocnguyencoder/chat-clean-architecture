@@ -4,9 +4,8 @@
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { StoryAvatar } from './index';
-
 import { render, screen } from '@/test/test-utils';
+import { StoryAvatar } from '@/ui/components/atoms/StoryAvatar';
 
 // Mock the avatar utility functions
 vi.mock('@/utils/avatar', () => ({

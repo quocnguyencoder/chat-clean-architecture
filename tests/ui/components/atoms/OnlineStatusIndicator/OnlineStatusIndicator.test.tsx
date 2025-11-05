@@ -5,9 +5,8 @@
 import type { CSSProperties } from 'react';
 import { describe, expect, it } from 'vitest';
 
-import { OnlineStatusIndicator } from './index';
-
 import { render } from '@/test/test-utils';
+import { OnlineStatusIndicator } from '@/ui/components/atoms/OnlineStatusIndicator';
 
 describe('OnlineStatusIndicator', () => {
   describe('Rendering', () => {
