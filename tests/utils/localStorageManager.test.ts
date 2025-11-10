@@ -107,6 +107,81 @@ describe('localStorageManager utilities', () => {
       // Other keys should not appear in messages or participants
       expect(Object.keys(result.data.messages).length).toBe(0);
     });
+
+    it('should handle null localStorage keys gracefully', () => {
+      // Mock localStorage.key() to return null for some indices
+      const originalKey = Storage.prototype.key;
+      const originalLength = Object.getOwnPropertyDescriptor(
+        Storage.prototype,
+        'length'
+      );
+
+      localStorage.setItem('chat-app-chats', '[]');
+      localStorage.setItem('chat-messages-test', '[]');
+
+      let callCount = 0;
+      Storage.prototype.key = function (index: number): string | null {
+        callCount++;
+        if (index === 1) return null; // Return null for middle index
+        return originalKey.call(this, index);
+      };
+
+      // Mock length to include the null key position
+      Object.defineProperty(Storage.prototype, 'length', {
+        get: function () {
+          return 3; // Force iteration through 3 items including null
+        },
+        configurable: true,
+      });
+
+      const result = exportLocalStorageData();
+
+      expect(result.data.chats).toBe('[]');
+      expect(callCount).toBeGreaterThan(0);
+
+      Storage.prototype.key = originalKey;
+      if (originalLength) {
+        Object.defineProperty(Storage.prototype, 'length', originalLength);
+      }
+    });
+
+    it('should skip message entries with null values', () => {
+      // Mock getItem to return null for specific keys
+      const originalGetItem = Storage.prototype.getItem;
+      Storage.prototype.getItem = function (key: string): string | null {
+        if (key === 'chat-messages-empty') return null;
+        return originalGetItem.call(this, key);
+      };
+
+      localStorage.setItem('chat-messages-chat1', JSON.stringify([]));
+      localStorage.setItem('chat-messages-empty', ''); // Will return null from mock
+
+      const result = exportLocalStorageData();
+
+      expect(result.data.messages).toHaveProperty('chat1');
+      expect(result.data.messages).not.toHaveProperty('empty');
+
+      Storage.prototype.getItem = originalGetItem;
+    });
+
+    it('should skip participant entries with null values', () => {
+      // Mock getItem to return null for specific keys
+      const originalGetItem = Storage.prototype.getItem;
+      Storage.prototype.getItem = function (key: string): string | null {
+        if (key === 'chat-participants-empty') return null;
+        return originalGetItem.call(this, key);
+      };
+
+      localStorage.setItem('chat-participants-chat1', JSON.stringify([]));
+      localStorage.setItem('chat-participants-empty', ''); // Will return null from mock
+
+      const result = exportLocalStorageData();
+
+      expect(result.data.participants).toHaveProperty('chat1');
+      expect(result.data.participants).not.toHaveProperty('empty');
+
+      Storage.prototype.getItem = originalGetItem;
+    });
   });
 
   describe('importLocalStorageData', () => {
@@ -230,6 +305,72 @@ describe('localStorageManager utilities', () => {
       };
 
       expect(() => importLocalStorageData(data)).not.toThrow();
+    });
+
+    it('should handle undefined messages gracefully', () => {
+      const data = {
+        version: '1.0.0',
+        timestamp: new Date().toISOString(),
+        data: {
+          chats: null,
+          userStatuses: null,
+          messages: undefined as any,
+          participants: {},
+        },
+      };
+
+      expect(() => importLocalStorageData(data)).not.toThrow();
+    });
+
+    it('should handle undefined participants gracefully', () => {
+      const data = {
+        version: '1.0.0',
+        timestamp: new Date().toISOString(),
+        data: {
+          chats: null,
+          userStatuses: null,
+          messages: {},
+          participants: undefined as any,
+        },
+      };
+
+      expect(() => importLocalStorageData(data)).not.toThrow();
+    });
+
+    it('should handle null chats data', () => {
+      const data: LocalStorageExport = {
+        version: '1.0.0',
+        timestamp: new Date().toISOString(),
+        data: {
+          chats: null,
+          userStatuses: 'test-status',
+          messages: {},
+          participants: {},
+        },
+      };
+
+      importLocalStorageData(data);
+
+      expect(localStorage.getItem('chat-app-chats')).toBeNull();
+      expect(localStorage.getItem('chat-user-statuses')).toBe('test-status');
+    });
+
+    it('should handle null userStatuses data', () => {
+      const data: LocalStorageExport = {
+        version: '1.0.0',
+        timestamp: new Date().toISOString(),
+        data: {
+          chats: 'test-chats',
+          userStatuses: null,
+          messages: {},
+          participants: {},
+        },
+      };
+
+      importLocalStorageData(data);
+
+      expect(localStorage.getItem('chat-app-chats')).toBe('test-chats');
+      expect(localStorage.getItem('chat-user-statuses')).toBeNull();
     });
   });
 
@@ -417,6 +558,131 @@ describe('localStorageManager utilities', () => {
       );
 
       globalThis.FileReader = originalFileReader;
+    });
+
+    it('should handle non-Error exceptions during parsing', async () => {
+      const mockData = {
+        version: '1.0.0',
+        timestamp: new Date().toISOString(),
+        data: {
+          chats: null,
+          userStatuses: null,
+          messages: {},
+          participants: {},
+        },
+      };
+
+      const blob = new Blob([JSON.stringify(mockData)], {
+        type: 'application/json',
+      });
+      const file = new File([blob], 'test.json');
+
+      // Mock JSON.parse to throw a non-Error value
+      const originalParse = JSON.parse;
+      const originalFileReader = globalThis.FileReader;
+
+      globalThis.FileReader = class extends originalFileReader {
+        readAsText() {
+          setTimeout(() => {
+            if (this.onload) {
+              // Simulate throwing a non-Error during parse
+              const originalOnload = this.onload;
+              this.onload = event => {
+                const originalJSONParse = JSON.parse;
+                JSON.parse = () => {
+                  JSON.parse = originalJSONParse;
+                  throw 'string error'; // Non-Error exception
+                };
+                originalOnload.call(this, event);
+              };
+
+              const event = {
+                target: { result: JSON.stringify(mockData) },
+              } as ProgressEvent<FileReader>;
+              this.onload(event);
+            }
+          }, 0);
+        }
+      } as any;
+
+      await expect(loadLocalStorageFromFile(file)).rejects.toThrow(
+        'Failed to parse JSON file'
+      );
+
+      JSON.parse = originalParse;
+      globalThis.FileReader = originalFileReader;
+    });
+
+    it('should handle missing data.data property', async () => {
+      const invalidData = {
+        version: '1.0.0',
+        timestamp: new Date().toISOString(),
+        // Missing data property
+      };
+
+      const blob = new Blob([JSON.stringify(invalidData)], {
+        type: 'application/json',
+      });
+      const file = new File([blob], 'invalid.json');
+
+      await expect(loadLocalStorageFromFile(file)).rejects.toThrow(
+        'Invalid data format'
+      );
+    });
+
+    it('should handle data.data being null', async () => {
+      const invalidData = {
+        version: '1.0.0',
+        timestamp: new Date().toISOString(),
+        data: null,
+      };
+
+      const blob = new Blob([JSON.stringify(invalidData)], {
+        type: 'application/json',
+      });
+      const file = new File([blob], 'invalid.json');
+
+      await expect(loadLocalStorageFromFile(file)).rejects.toThrow(
+        'Invalid data format'
+      );
+    });
+
+    it('should handle data.data being a non-object', async () => {
+      const invalidData = {
+        version: '1.0.0',
+        timestamp: new Date().toISOString(),
+        data: 'string-instead-of-object',
+      };
+
+      const blob = new Blob([JSON.stringify(invalidData)], {
+        type: 'application/json',
+      });
+      const file = new File([blob], 'invalid.json');
+
+      await expect(loadLocalStorageFromFile(file)).rejects.toThrow(
+        'Invalid data format'
+      );
+    });
+  });
+
+  describe('clearAllChatData - additional edge cases', () => {
+    it('should handle null keys in iteration', () => {
+      const originalKey = Storage.prototype.key;
+      let callCount = 0;
+      Storage.prototype.key = function (index: number): string | null {
+        callCount++;
+        if (callCount === 2) return null;
+        return originalKey.call(this, index);
+      };
+
+      localStorage.setItem('chat-app-chats', '[]');
+      localStorage.setItem('other-key', 'value');
+
+      clearAllChatData();
+
+      expect(localStorage.getItem('other-key')).toBe('value');
+
+      Storage.prototype.key = originalKey;
     });
   });
 });
